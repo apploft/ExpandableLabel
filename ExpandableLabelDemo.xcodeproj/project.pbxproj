@@ -13,6 +13,7 @@
 		BF4342A71B416FDD002FDE1F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A61B416FDD002FDE1F /* Images.xcassets */; };
 		BF4342AA1B416FDD002FDE1F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A81B416FDD002FDE1F /* LaunchScreen.xib */; };
 		BF4342B61B416FDD002FDE1F /* ExpandableLabelDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342B51B416FDD002FDE1F /* ExpandableLabelDemoTests.swift */; };
+		BF4342C11B417013002FDE1F /* ExpandableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342C01B417013002FDE1F /* ExpandableLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		BF4342AF1B416FDD002FDE1F /* ExpandableLabelDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExpandableLabelDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF4342B41B416FDD002FDE1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF4342B51B416FDD002FDE1F /* ExpandableLabelDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableLabelDemoTests.swift; sourceTree = "<group>"; };
+		BF4342C01B417013002FDE1F /* ExpandableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ExpandableLabel.swift; path = ExpandableLabel/ExpandableLabel.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +85,7 @@
 				BF4342A61B416FDD002FDE1F /* Images.xcassets */,
 				BF4342A81B416FDD002FDE1F /* LaunchScreen.xib */,
 				BF43429D1B416FDD002FDE1F /* Supporting Files */,
+				BF4342C01B417013002FDE1F /* ExpandableLabel.swift */,
 			);
 			path = ExpandableLabelDemo;
 			sourceTree = "<group>";
@@ -214,6 +217,7 @@
 			files = (
 				BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */,
 				BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */,
+				BF4342C11B417013002FDE1F /* ExpandableLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
