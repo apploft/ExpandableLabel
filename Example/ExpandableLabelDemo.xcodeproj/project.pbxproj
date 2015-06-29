@@ -12,19 +12,8 @@
 		BF4342A51B416FDD002FDE1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A31B416FDD002FDE1F /* Main.storyboard */; };
 		BF4342A71B416FDD002FDE1F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A61B416FDD002FDE1F /* Images.xcassets */; };
 		BF4342AA1B416FDD002FDE1F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A81B416FDD002FDE1F /* LaunchScreen.xib */; };
-		BF4342B61B416FDD002FDE1F /* ExpandableLabelDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342B51B416FDD002FDE1F /* ExpandableLabelDemoTests.swift */; };
-		BF4342C11B417013002FDE1F /* ExpandableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342C01B417013002FDE1F /* ExpandableLabel.swift */; };
+		BF4342C41B41A1B8002FDE1F /* ExpandableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342C31B41A1B8002FDE1F /* ExpandableLabel.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		BF4342B01B416FDD002FDE1F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BF4342921B416FDD002FDE1F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BF4342991B416FDD002FDE1F;
-			remoteInfo = ExpandableLabelDemo;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		BF43429A1B416FDD002FDE1F /* ExpandableLabelDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpandableLabelDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -34,21 +23,11 @@
 		BF4342A41B416FDD002FDE1F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BF4342A61B416FDD002FDE1F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		BF4342A91B416FDD002FDE1F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		BF4342AF1B416FDD002FDE1F /* ExpandableLabelDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExpandableLabelDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BF4342B41B416FDD002FDE1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BF4342B51B416FDD002FDE1F /* ExpandableLabelDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandableLabelDemoTests.swift; sourceTree = "<group>"; };
-		BF4342C01B417013002FDE1F /* ExpandableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ExpandableLabel.swift; path = ExpandableLabel/ExpandableLabel.swift; sourceTree = SOURCE_ROOT; };
+		BF4342C31B41A1B8002FDE1F /* ExpandableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		BF4342971B416FDD002FDE1F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BF4342AC1B416FDD002FDE1F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -62,7 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				BF43429C1B416FDD002FDE1F /* ExpandableLabelDemo */,
-				BF4342B21B416FDD002FDE1F /* ExpandableLabelDemoTests */,
 				BF43429B1B416FDD002FDE1F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,7 +49,6 @@
 			isa = PBXGroup;
 			children = (
 				BF43429A1B416FDD002FDE1F /* ExpandableLabelDemo.app */,
-				BF4342AF1B416FDD002FDE1F /* ExpandableLabelDemoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,13 +56,13 @@
 		BF43429C1B416FDD002FDE1F /* ExpandableLabelDemo */ = {
 			isa = PBXGroup;
 			children = (
+				BF4342C21B41A1B8002FDE1F /* ExpandableLabel */,
 				BF43429F1B416FDD002FDE1F /* AppDelegate.swift */,
 				BF4342A11B416FDD002FDE1F /* ViewController.swift */,
 				BF4342A31B416FDD002FDE1F /* Main.storyboard */,
 				BF4342A61B416FDD002FDE1F /* Images.xcassets */,
 				BF4342A81B416FDD002FDE1F /* LaunchScreen.xib */,
 				BF43429D1B416FDD002FDE1F /* Supporting Files */,
-				BF4342C01B417013002FDE1F /* ExpandableLabel.swift */,
 			);
 			path = ExpandableLabelDemo;
 			sourceTree = "<group>";
@@ -98,21 +75,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		BF4342B21B416FDD002FDE1F /* ExpandableLabelDemoTests */ = {
+		BF4342C21B41A1B8002FDE1F /* ExpandableLabel */ = {
 			isa = PBXGroup;
 			children = (
-				BF4342B51B416FDD002FDE1F /* ExpandableLabelDemoTests.swift */,
-				BF4342B31B416FDD002FDE1F /* Supporting Files */,
+				BF4342C31B41A1B8002FDE1F /* ExpandableLabel.swift */,
 			);
-			path = ExpandableLabelDemoTests;
-			sourceTree = "<group>";
-		};
-		BF4342B31B416FDD002FDE1F /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				BF4342B41B416FDD002FDE1F /* Info.plist */,
-			);
-			name = "Supporting Files";
+			name = ExpandableLabel;
+			path = ../../ExpandableLabel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,24 +104,6 @@
 			productReference = BF43429A1B416FDD002FDE1F /* ExpandableLabelDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BF4342AE1B416FDD002FDE1F /* ExpandableLabelDemoTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BF4342BC1B416FDD002FDE1F /* Build configuration list for PBXNativeTarget "ExpandableLabelDemoTests" */;
-			buildPhases = (
-				BF4342AB1B416FDD002FDE1F /* Sources */,
-				BF4342AC1B416FDD002FDE1F /* Frameworks */,
-				BF4342AD1B416FDD002FDE1F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BF4342B11B416FDD002FDE1F /* PBXTargetDependency */,
-			);
-			name = ExpandableLabelDemoTests;
-			productName = ExpandableLabelDemoTests;
-			productReference = BF4342AF1B416FDD002FDE1F /* ExpandableLabelDemoTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -164,10 +115,6 @@
 				TargetAttributes = {
 					BF4342991B416FDD002FDE1F = {
 						CreatedOnToolsVersion = 6.3.2;
-					};
-					BF4342AE1B416FDD002FDE1F = {
-						CreatedOnToolsVersion = 6.3.2;
-						TestTargetID = BF4342991B416FDD002FDE1F;
 					};
 				};
 			};
@@ -185,7 +132,6 @@
 			projectRoot = "";
 			targets = (
 				BF4342991B416FDD002FDE1F /* ExpandableLabelDemo */,
-				BF4342AE1B416FDD002FDE1F /* ExpandableLabelDemoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -201,13 +147,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BF4342AD1B416FDD002FDE1F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -217,27 +156,11 @@
 			files = (
 				BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */,
 				BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */,
-				BF4342C11B417013002FDE1F /* ExpandableLabel.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BF4342AB1B416FDD002FDE1F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BF4342B61B416FDD002FDE1F /* ExpandableLabelDemoTests.swift in Sources */,
+				BF4342C41B41A1B8002FDE1F /* ExpandableLabel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		BF4342B11B416FDD002FDE1F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BF4342991B416FDD002FDE1F /* ExpandableLabelDemo */;
-			targetProxy = BF4342B01B416FDD002FDE1F /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		BF4342A31B416FDD002FDE1F /* Main.storyboard */ = {
@@ -360,40 +283,6 @@
 			};
 			name = Release;
 		};
-		BF4342BD1B416FDD002FDE1F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ExpandableLabelDemoTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ExpandableLabelDemo.app/ExpandableLabelDemo";
-			};
-			name = Debug;
-		};
-		BF4342BE1B416FDD002FDE1F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ExpandableLabelDemoTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ExpandableLabelDemo.app/ExpandableLabelDemo";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -413,14 +302,7 @@
 				BF4342BB1B416FDD002FDE1F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-		};
-		BF4342BC1B416FDD002FDE1F /* Build configuration list for PBXNativeTarget "ExpandableLabelDemoTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BF4342BD1B416FDD002FDE1F /* Debug */,
-				BF4342BE1B416FDD002FDE1F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
