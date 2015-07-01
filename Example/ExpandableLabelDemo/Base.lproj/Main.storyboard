@@ -1,41 +1,70 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Sgv-1X-8Ia">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="ufC-wZ-h7g">
+        <!--Demo-->
+        <scene sceneID="XPS-CU-ONx">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModule="ExpandableLabelDemo" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
-                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
+                <tableViewController id="WAi-Qd-2Qg" customClass="ViewController" customModule="ExpandableLabelDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="WO2-8j-306">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9pc-hX-EdP" customClass="ExpandableLabel" customModule="ExpandableLabelDemo" customModuleProvider="target">
-                                <rect key="frame" x="16" y="289" width="568" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="centerY" secondItem="9pc-hX-EdP" secondAttribute="centerY" id="D4j-uU-SYP"/>
-                            <constraint firstItem="9pc-hX-EdP" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="16" id="awm-d4-jWg"/>
-                            <constraint firstAttribute="trailing" secondItem="9pc-hX-EdP" secondAttribute="trailing" constant="16" id="c9p-Tz-kcF"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="expandableLabel" destination="9pc-hX-EdP" id="Thg-XE-qtM"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cell" id="HCr-2t-aim" customClass="ExpandableCell" customModule="ExpandableLabelDemo" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HCr-2t-aim" id="TdU-MF-KYO">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9dO-02-Lp8" customClass="ExpandableLabel" customModule="ExpandableLabelDemo" customModuleProvider="target">
+                                            <rect key="frame" x="8" y="11" width="584" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="9dO-02-Lp8" secondAttribute="bottom" constant="11" id="hKz-wF-KTd"/>
+                                        <constraint firstItem="9dO-02-Lp8" firstAttribute="top" secondItem="TdU-MF-KYO" secondAttribute="top" constant="11" id="pJq-E0-xMQ"/>
+                                        <constraint firstItem="9dO-02-Lp8" firstAttribute="leading" secondItem="TdU-MF-KYO" secondAttribute="leading" constant="8" id="t56-jO-sfj"/>
+                                        <constraint firstAttribute="trailing" secondItem="9dO-02-Lp8" secondAttribute="trailing" constant="8" id="zpH-lA-5tB"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="expandableLabel" destination="9dO-02-Lp8" id="tSo-Ay-dyq"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="WAi-Qd-2Qg" id="u00-32-aSl"/>
+                            <outlet property="delegate" destination="WAi-Qd-2Qg" id="Yax-gI-Jlo"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Demo" id="Ycw-Ar-1OC"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oyE-r0-827" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="1329" y="304"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="rka-Ye-KxD">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Sgv-1X-8Ia" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="05P-69-cdP">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="WAi-Qd-2Qg" kind="relationship" relationship="rootViewController" id="5ec-Pa-ndU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4MP-pd-d8b" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="517" y="304"/>
         </scene>
     </scenes>
 </document>

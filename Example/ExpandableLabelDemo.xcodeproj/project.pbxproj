@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF38D1C81B42EE3E000091FD /* ExpandableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */; };
 		BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43429F1B416FDD002FDE1F /* AppDelegate.swift */; };
 		BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342A11B416FDD002FDE1F /* ViewController.swift */; };
 		BF4342A51B416FDD002FDE1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A31B416FDD002FDE1F /* Main.storyboard */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableCell.swift; sourceTree = "<group>"; };
 		BF43429A1B416FDD002FDE1F /* ExpandableLabelDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpandableLabelDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF43429E1B416FDD002FDE1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BF43429F1B416FDD002FDE1F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				BF4342C21B41A1B8002FDE1F /* ExpandableLabel */,
 				BF43429F1B416FDD002FDE1F /* AppDelegate.swift */,
 				BF4342A11B416FDD002FDE1F /* ViewController.swift */,
+				BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */,
 				BF4342A31B416FDD002FDE1F /* Main.storyboard */,
 				BF4342A61B416FDD002FDE1F /* Images.xcassets */,
 				BF4342A81B416FDD002FDE1F /* LaunchScreen.xib */,
@@ -157,6 +160,7 @@
 				BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */,
 				BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */,
 				BF4342C41B41A1B8002FDE1F /* ExpandableLabel.swift in Sources */,
+				BF38D1C81B42EE3E000091FD /* ExpandableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
