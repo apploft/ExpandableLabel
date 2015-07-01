@@ -7,16 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF0468121B44121F009EC2F9 /* ExpandableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0468111B44121F009EC2F9 /* ExpandableLabel.swift */; };
 		BF38D1C81B42EE3E000091FD /* ExpandableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */; };
 		BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43429F1B416FDD002FDE1F /* AppDelegate.swift */; };
 		BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342A11B416FDD002FDE1F /* ViewController.swift */; };
 		BF4342A51B416FDD002FDE1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A31B416FDD002FDE1F /* Main.storyboard */; };
 		BF4342A71B416FDD002FDE1F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A61B416FDD002FDE1F /* Images.xcassets */; };
 		BF4342AA1B416FDD002FDE1F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BF4342A81B416FDD002FDE1F /* LaunchScreen.xib */; };
-		BF4342C41B41A1B8002FDE1F /* ExpandableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342C31B41A1B8002FDE1F /* ExpandableLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BF0468111B44121F009EC2F9 /* ExpandableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableLabel.swift; sourceTree = "<group>"; };
 		BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableCell.swift; sourceTree = "<group>"; };
 		BF43429A1B416FDD002FDE1F /* ExpandableLabelDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpandableLabelDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF43429E1B416FDD002FDE1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -25,7 +26,6 @@
 		BF4342A41B416FDD002FDE1F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BF4342A61B416FDD002FDE1F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		BF4342A91B416FDD002FDE1F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		BF4342C31B41A1B8002FDE1F /* ExpandableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +39,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF0468101B44121F009EC2F9 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BF0468111B44121F009EC2F9 /* ExpandableLabel.swift */,
+			);
+			name = Classes;
+			path = ../../Classes;
+			sourceTree = "<group>";
+		};
 		BF4342911B416FDD002FDE1F = {
 			isa = PBXGroup;
 			children = (
@@ -58,7 +67,7 @@
 		BF43429C1B416FDD002FDE1F /* ExpandableLabelDemo */ = {
 			isa = PBXGroup;
 			children = (
-				BF4342C21B41A1B8002FDE1F /* ExpandableLabel */,
+				BF0468101B44121F009EC2F9 /* Classes */,
 				BF43429F1B416FDD002FDE1F /* AppDelegate.swift */,
 				BF4342A11B416FDD002FDE1F /* ViewController.swift */,
 				BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */,
@@ -76,15 +85,6 @@
 				BF43429E1B416FDD002FDE1F /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		BF4342C21B41A1B8002FDE1F /* ExpandableLabel */ = {
-			isa = PBXGroup;
-			children = (
-				BF4342C31B41A1B8002FDE1F /* ExpandableLabel.swift */,
-			);
-			name = ExpandableLabel;
-			path = ../../ExpandableLabel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,9 +157,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF0468121B44121F009EC2F9 /* ExpandableLabel.swift in Sources */,
 				BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */,
 				BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */,
-				BF4342C41B41A1B8002FDE1F /* ExpandableLabel.swift in Sources */,
 				BF38D1C81B42EE3E000091FD /* ExpandableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
