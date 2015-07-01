@@ -24,30 +24,21 @@ class ExpandableLabel : UILabel {
     /// The delegate of ExpandableLabel
     weak var delegate: ExpandableLabelDelegate?
     
-    /// The maximum number of lines that should be displayed if the label is collapsed.
-    /// The default value is 3. Values smaller than 1 will be ignored.
-    var collapsedNumberOfLines : NSInteger = 3 {
-        didSet {
-            collapsedNumberOfLines = (collapsedNumberOfLines < 1) ? 1 : collapsedNumberOfLines
-        }
-    }
-    
     /// Set 'true' if the label should be collapsed or 'false' for expanded.
-    var collapsed : Bool = true {
+    @IBInspectable var collapsed : Bool = true {
         didSet {
             super.attributedText = (collapsed) ? self.collapsedText : self.expandedText
-            super.numberOfLines = (collapsed) ? collapsedNumberOfLines : 0
+            super.numberOfLines = (collapsed) ? self.collapsedNumberOfLines : 0
         }
     }
     
     /// Set the link name (and attributes) that is shown when collapsed.
     /// The default value is "More". Cannot be nil.
-    var collapsedAttributedLink : NSAttributedString!
+    @IBInspectable var collapsedAttributedLink : NSAttributedString!
     
     /// Set the ellipsis that appears just after the text and before the link.
     /// The default value is "...". Can be nil.
     var ellipsis : NSAttributedString?
-    
     
     
     //
@@ -59,11 +50,19 @@ class ExpandableLabel : UILabel {
     private var linkHighlighted : Bool = false
     private let touchSize = CGSize(width: 44, height: 44)
     private var linkRect : CGRect?
-
+    private var collapsedNumberOfLines : NSInteger = 0
+    
+    override var numberOfLines: NSInteger {
+        didSet {
+            collapsedNumberOfLines = numberOfLines
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         userInteractionEnabled = true
         lineBreakMode = NSLineBreakMode.ByClipping
+        numberOfLines = 3
         collapsedAttributedLink = NSAttributedString(string: "More", attributes: [NSFontAttributeName : UIFont.boldSystemFontOfSize(font.pointSize)])
         ellipsis = NSAttributedString(string: "...", attributes: [NSFontAttributeName : font])
     }
@@ -135,7 +134,7 @@ class ExpandableLabel : UILabel {
     private func getCollapsedTextForText(text : NSAttributedString?, link: NSAttributedString) -> NSAttributedString? {
         if let text = text {
             let lines = getLinesArrayOfAttributedText(text)
-            if (collapsedNumberOfLines < lines.count) {
+            if (collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count) {
                 let lastLineRef = lines[collapsedNumberOfLines-1] as CTLineRef
                 let modifiedLastLineText = textWithLinkReplacement(lastLineRef, lineText: text, linkName: link)
                 
@@ -197,6 +196,8 @@ class ExpandableLabel : UILabel {
             return collapsedLinkHighlighted
         }
     }
+    
+    // MARK: Touch Handling
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         setLinkHighlighted(touches, event: event, highlighted: true)

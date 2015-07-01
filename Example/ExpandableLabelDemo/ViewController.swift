@@ -29,6 +29,7 @@ class ViewController: UITableViewController, UITableViewDelegate, UITableViewDat
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! ExpandableCell
         cell.expandableLabel.delegate = self
+        cell.expandableLabel.numberOfLines = 3
         cell.expandableLabel.collapsed = states[indexPath.row]
         cell.expandableLabel.text = loremIpsumText()
         return cell
