@@ -1,7 +1,7 @@
 # ExpandableLabel
 ExpandableLabel is a simple UILabel subclass that shows a tappable link if the content doesn't fit the specified number of lines. If touched, the label will expand to show the entire content.
 
-<img src="">
+<img src="https://raw.githubusercontent.com/apploft/ExpandableLabel/master/Resources/ExpandableLabel.gif">
 
 # Installation
 Install via cocoapods by adding this to your Podfile:
