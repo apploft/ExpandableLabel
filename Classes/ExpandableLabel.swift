@@ -150,8 +150,8 @@ class ExpandableLabel : UILabel {
             let fits = self.textFitsWidth(lineTextWithAddedLink)
             if (fits == true) {
                 lineTextWithLink = lineTextWithAddedLink
-                let lineTextWithLastWordRemovedRect = lineTextWithLastWordRemoved.rect(self.frame)
-                let wordRect = linkName.rect(self.frame)
+                let lineTextWithLastWordRemovedRect = lineTextWithLastWordRemoved.boundingRectForWidth(self.frame.size.width)
+                let wordRect = linkName.boundingRectForWidth(self.frame.size.width)
                 self.linkRect = CGRectMake(lineTextWithLastWordRemovedRect.size.width, self.font.lineHeight * CGFloat(self.collapsedNumberOfLines-1), wordRect.size.width, wordRect.size.height)
                 stop.memory = true
             }
@@ -162,7 +162,7 @@ class ExpandableLabel : UILabel {
     
     private func getCollapsedTextForText(text : NSAttributedString?, link: NSAttributedString) -> NSAttributedString? {
         if let text = text {
-            let lines = text.getLinesArrayOfAttributedText(frame)
+            let lines = text.linesForWidth(frame.size.width)
             if (collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count) {
                 let lastLineRef = lines[collapsedNumberOfLines-1] as CTLineRef
                 let modifiedLastLineText = textWithLinkReplacement(lastLineRef, text: text, linkName: link)
@@ -183,7 +183,7 @@ class ExpandableLabel : UILabel {
     }
 
     private func textFitsWidth(text : NSAttributedString) -> Bool {
-        return (text.rect(frame).size.height <= font.lineHeight) as Bool
+        return (text.boundingRectForWidth(frame.size.width).size.height <= font.lineHeight) as Bool
     }
     
     // MARK: Touch Handling
@@ -253,8 +253,8 @@ private extension NSAttributedString {
         return highlightedCopy
     }
     
-    func getLinesArrayOfAttributedText(frame : CGRect) -> Array<CTLineRef> {
-        let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: frame.size.width, height: CGFloat(MAXFLOAT)))
+    func linesForWidth(width : CGFloat) -> Array<CTLineRef> {
+        let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: width, height: CGFloat(MAXFLOAT)))
         let frameSetterRef : CTFramesetterRef = CTFramesetterCreateWithAttributedString(self as CFAttributedStringRef)
         let frameRef : CTFrameRef = CTFramesetterCreateFrame(frameSetterRef, CFRangeMake(0, 0), path.CGPath, nil)
         return CTFrameGetLines(frameRef) as! Array<CTLineRef>
@@ -266,8 +266,8 @@ private extension NSAttributedString {
         return self.attributedSubstringFromRange(range)
     }
     
-    func rect(frame : CGRect) -> CGRect {
-        return self.boundingRectWithSize(CGSize(width: frame.size.width, height: CGFloat(MAXFLOAT)),
+    func boundingRectForWidth(width : CGFloat) -> CGRect {
+        return self.boundingRectWithSize(CGSize(width: width, height: CGFloat(MAXFLOAT)),
             options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil)
     }
 }
