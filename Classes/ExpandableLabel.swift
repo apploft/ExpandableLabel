@@ -118,7 +118,7 @@ class ExpandableLabel : UILabel {
     
     override var attributedText: NSAttributedString? {
         set(attributedText) {
-            if let attributedText = attributedText {
+            if let attributedText = attributedText where attributedText.length > 0 {
                 self.expandedText = attributedText.copyWithAddedFontAttribute(font)
                 self.collapsedText = getCollapsedTextForText(self.expandedText, link: (linkHighlighted) ? collapsedAttributedLink.copyWithHighlightedColor() : collapsedAttributedLink)
                 super.attributedText = (self.collapsed) ? self.collapsedText : self.expandedText;
