@@ -23,7 +23,7 @@
 
 import UIKit
 
-class ViewController: UITableViewController, UITableViewDelegate, UITableViewDataSource, ExpandableLabelDelegate {
+class ViewController: UITableViewController, ExpandableLabelDelegate {
 
     let numberOfCells : NSInteger = 10
     var states : Array<Bool>!

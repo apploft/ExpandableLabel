@@ -81,7 +81,7 @@ class ExpandableLabel : UILabel {
         }
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
@@ -139,9 +139,9 @@ class ExpandableLabel : UILabel {
     private func textWithLinkReplacement(line : CTLineRef, text : NSAttributedString, linkName : NSAttributedString) -> NSAttributedString {
         let lineText = text.textForLine(line)
         var lineTextWithLink = lineText
-        (lineText.string as NSString).enumerateSubstringsInRange(NSMakeRange(0, lineText.length), options: .ByWords | .Reverse) { (word, subRange, enclosingRange, stop) -> () in
+        (lineText.string as NSString).enumerateSubstringsInRange(NSMakeRange(0, lineText.length), options: [.ByWords, .Reverse]) { (word, subRange, enclosingRange, stop) -> () in
             let lineTextWithLastWordRemoved = lineText.attributedSubstringFromRange(NSMakeRange(0, subRange.location))
-            var lineTextWithAddedLink = NSMutableAttributedString(attributedString: lineTextWithLastWordRemoved)
+            let lineTextWithAddedLink = NSMutableAttributedString(attributedString: lineTextWithLastWordRemoved)
             if let ellipsis = self.ellipsis {
                 lineTextWithAddedLink.appendAttributedString(ellipsis)
                 lineTextWithAddedLink.appendAttributedString(NSAttributedString(string: " ", attributes: [NSFontAttributeName : self.font]))
@@ -167,7 +167,7 @@ class ExpandableLabel : UILabel {
                 let lastLineRef = lines[collapsedNumberOfLines-1] as CTLineRef
                 let modifiedLastLineText = textWithLinkReplacement(lastLineRef, text: text, linkName: link)
                 
-                var collapsedLines = NSMutableAttributedString()
+                let collapsedLines = NSMutableAttributedString()
                 if (collapsedNumberOfLines >= 2) {
                     for index in 0...collapsedNumberOfLines-2 {
                         collapsedLines.appendAttributedString(text.textForLine(lines[index]))
@@ -188,15 +188,15 @@ class ExpandableLabel : UILabel {
     
     // MARK: Touch Handling
     
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         setLinkHighlighted(touches, event: event, highlighted: true)
     }
     
-    override func touchesCancelled(touches: Set<NSObject>!, withEvent event: UIEvent!) {
+    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         setLinkHighlighted(touches, event: event, highlighted: false)
     }
     
-    override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if setLinkHighlighted(touches, event: event, highlighted: false) {
             delegate?.willExpandLabel(self)
             collapsed = false
@@ -204,12 +204,12 @@ class ExpandableLabel : UILabel {
         }
     }
     
-    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         setLinkHighlighted(touches, event: event, highlighted: false)
     }
     
-    private func setLinkHighlighted(touches: Set<NSObject>, event: UIEvent, highlighted : Bool) -> Bool {
-        let touch = event.allTouches()?.first as? UITouch
+    private func setLinkHighlighted(touches: Set<UITouch>?, event: UIEvent?, highlighted : Bool) -> Bool {
+        let touch = event?.allTouches()?.first
         let location = touch?.locationInView(self)
         if let location = location, linkRect = linkRect {
             let finger = CGRectMake(location.x-touchSize.width/2, location.y-touchSize.height/2, touchSize.width, touchSize.height);
@@ -234,7 +234,7 @@ private extension NSAttributedString {
     
     func copyWithAddedFontAttribute(font : UIFont) -> NSAttributedString {
         if (hasFontAttribute() == false) {
-            var copy = NSMutableAttributedString(attributedString: self)
+            let copy = NSMutableAttributedString(attributedString: self)
             copy.addAttribute(NSFontAttributeName, value: font, range: NSMakeRange(0, copy.length))
             return copy
         }
@@ -242,12 +242,11 @@ private extension NSAttributedString {
     }
     
     func copyWithHighlightedColor() -> NSAttributedString {
-        let range = NSMakeRange(0, self.length)
         let alphaComponent = CGFloat(0.5)
         var baseColor: UIColor? = self.attribute(NSForegroundColorAttributeName, atIndex: 0, effectiveRange: nil) as? UIColor
         if let color = baseColor { baseColor = color.colorWithAlphaComponent(alphaComponent) }
         else { baseColor = UIColor.blackColor().colorWithAlphaComponent(alphaComponent) }
-        var highlightedCopy = NSMutableAttributedString(attributedString: self)
+        let highlightedCopy = NSMutableAttributedString(attributedString: self)
         highlightedCopy.removeAttribute(NSForegroundColorAttributeName, range: NSMakeRange(0, highlightedCopy.length))
         highlightedCopy.addAttribute(NSForegroundColorAttributeName, value: baseColor!, range: NSMakeRange(0, highlightedCopy.length))
         return highlightedCopy
@@ -257,7 +256,12 @@ private extension NSAttributedString {
         let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: width, height: CGFloat(MAXFLOAT)))
         let frameSetterRef : CTFramesetterRef = CTFramesetterCreateWithAttributedString(self as CFAttributedStringRef)
         let frameRef : CTFrameRef = CTFramesetterCreateFrame(frameSetterRef, CFRangeMake(0, 0), path.CGPath, nil)
-        return CTFrameGetLines(frameRef) as! Array<CTLineRef>
+        
+        let linesNS: NSArray  = CTFrameGetLines(frameRef)
+        let linesAO: [AnyObject] = linesNS as [AnyObject]
+        let lines: [CTLine] = linesAO as! [CTLineRef]
+        
+        return lines
     }
     
     func textForLine(lineRef : CTLineRef) -> NSAttributedString {
