@@ -24,23 +24,26 @@
 import UIKit
 
 /**
-* The delegate of ExpandableLabel.
-*/
-@objc protocol ExpandableLabelDelegate : class {
+ * The delegate of ExpandableLabel.
+ */
+@objc public protocol ExpandableLabelDelegate : class {
     func willExpandLabel(label: ExpandableLabel)
     func didExpandLabel(label: ExpandableLabel)
+    
+    func willCollapseLabel(label: ExpandableLabel)
+    func didCollapseLabel(label: ExpandableLabel)
 }
 
 /**
  * ExpandableLabel
  */
-class ExpandableLabel : UILabel {
+public class ExpandableLabel : UILabel {
     
     /// The delegate of ExpandableLabel
-    weak var delegate: ExpandableLabelDelegate?
+    weak public var delegate: ExpandableLabelDelegate?
     
     /// Set 'true' if the label should be collapsed or 'false' for expanded.
-    @IBInspectable var collapsed : Bool = true {
+    @IBInspectable public var collapsed : Bool = true {
         didSet {
             super.attributedText = (collapsed) ? self.collapsedText : self.expandedText
             super.numberOfLines = (collapsed) ? self.collapsedNumberOfLines : 0
@@ -49,7 +52,7 @@ class ExpandableLabel : UILabel {
     
     /// Set the link name (and attributes) that is shown when collapsed.
     /// The default value is "More". Cannot be nil.
-    @IBInspectable var collapsedAttributedLink : NSAttributedString! {
+    @IBInspectable public var collapsedAttributedLink : NSAttributedString! {
         didSet {
             self.collapsedAttributedLink = collapsedAttributedLink.copyWithAddedFontAttribute(font)
         }
@@ -57,7 +60,7 @@ class ExpandableLabel : UILabel {
     
     /// Set the ellipsis that appears just after the text and before the link.
     /// The default value is "...". Can be nil.
-    var ellipsis : NSAttributedString?{
+    public var ellipsis : NSAttributedString?{
         didSet {
             self.ellipsis = ellipsis?.copyWithAddedFontAttribute(font)
         }
@@ -75,13 +78,13 @@ class ExpandableLabel : UILabel {
     private var linkRect : CGRect?
     private var collapsedNumberOfLines : NSInteger = 0
     
-    override var numberOfLines: NSInteger {
+    public override var numberOfLines: NSInteger {
         didSet {
             collapsedNumberOfLines = numberOfLines
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
@@ -103,7 +106,7 @@ class ExpandableLabel : UILabel {
         ellipsis = NSAttributedString(string: "...")
     }
     
-    override var text: String? {
+    public override var text: String? {
         set(text) {
             if let text = text {
                 self.attributedText = NSAttributedString(string: text)
@@ -116,7 +119,7 @@ class ExpandableLabel : UILabel {
         }
     }
     
-    override var attributedText: NSAttributedString? {
+    public override var attributedText: NSAttributedString? {
         set(attributedText) {
             if let attributedText = attributedText where attributedText.length > 0 {
                 self.expandedText = attributedText.copyWithAddedFontAttribute(font)
@@ -131,7 +134,7 @@ class ExpandableLabel : UILabel {
         }
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         attributedText = expandedText
     }
@@ -158,7 +161,7 @@ class ExpandableLabel : UILabel {
         }
         return lineTextWithLink
     }
-
+    
     
     private func getCollapsedTextForText(text : NSAttributedString?, link: NSAttributedString) -> NSAttributedString? {
         if let text = text {
@@ -181,30 +184,38 @@ class ExpandableLabel : UILabel {
             return nil;
         }
     }
-
+    
     private func textFitsWidth(text : NSAttributedString) -> Bool {
         return (text.boundingRectForWidth(frame.size.width).size.height <= font.lineHeight) as Bool
     }
     
     // MARK: Touch Handling
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    public override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         setLinkHighlighted(touches, event: event, highlighted: true)
     }
     
-    override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
+    public override func touchesCancelled(touches: Set<UITouch>?, withEvent event: UIEvent?) {
         setLinkHighlighted(touches, event: event, highlighted: false)
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        if setLinkHighlighted(touches, event: event, highlighted: false) {
-            delegate?.willExpandLabel(self)
-            collapsed = false
-            delegate?.didExpandLabel(self)
+    public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        if !collapsed {
+            delegate?.willCollapseLabel(self)
+            collapsed = true
+            delegate?.didCollapseLabel(self)
+            linkHighlighted = highlighted
+            setNeedsDisplay()
+        }else{
+            if setLinkHighlighted(touches, event: event, highlighted: false) {
+                delegate?.willExpandLabel(self)
+                collapsed = false
+                delegate?.didExpandLabel(self)
+            }
         }
     }
     
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    public override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         setLinkHighlighted(touches, event: event, highlighted: false)
     }
     
@@ -215,7 +226,6 @@ class ExpandableLabel : UILabel {
             let finger = CGRectMake(location.x-touchSize.width/2, location.y-touchSize.height/2, touchSize.width, touchSize.height);
             if collapsed && CGRectIntersectsRect(finger, linkRect) {
                 linkHighlighted = highlighted
-                attributedText = expandedText
                 setNeedsDisplay()
                 return true
             }
@@ -272,6 +282,6 @@ private extension NSAttributedString {
     
     func boundingRectForWidth(width : CGFloat) -> CGRect {
         return self.boundingRectWithSize(CGSize(width: width, height: CGFloat(MAXFLOAT)),
-            options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil)
+                                         options: NSStringDrawingOptions.UsesLineFragmentOrigin, context: nil)
     }
 }

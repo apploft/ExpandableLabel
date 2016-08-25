@@ -74,6 +74,18 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         }
         tableView.endUpdates()
     }
+    
+    func willCollapseLabel(label: ExpandableLabel) {
+        tableView.beginUpdates()
+    }
+    
+    func didCollapseLabel(label: ExpandableLabel) {
+        let point = label.convertPoint(CGPointZero, toView: tableView)
+        if let indexPath = tableView.indexPathForRowAtPoint(point) as NSIndexPath? {
+            states[indexPath.row] = true
+        }
+        tableView.endUpdates()
+    }
 }
 
 
