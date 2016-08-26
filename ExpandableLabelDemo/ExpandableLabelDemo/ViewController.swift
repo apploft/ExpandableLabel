@@ -86,6 +86,10 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         }
         tableView.endUpdates()
     }
+    
+    func shouldCollapseLabel(label: ExpandableLabel) -> Bool {
+        return true
+    }
 }
 
 
