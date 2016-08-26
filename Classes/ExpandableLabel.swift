@@ -26,12 +26,30 @@ import UIKit
 /**
  * The delegate of ExpandableLabel.
  */
-@objc public protocol ExpandableLabelDelegate : class {
+public protocol ExpandableLabelDelegate : NSObjectProtocol {
     func willExpandLabel(label: ExpandableLabel)
     func didExpandLabel(label: ExpandableLabel)
+    func shouldExpandLabel(label: ExpandableLabel) -> Bool
     
     func willCollapseLabel(label: ExpandableLabel)
     func didCollapseLabel(label: ExpandableLabel)
+    func shouldCollapseLabel(label: ExpandableLabel) -> Bool
+}
+
+extension ExpandableLabelDelegate {
+    public func shouldExpandLabel(label: ExpandableLabel) -> Bool {
+        return Static.DefaultShouldExpandValue
+    }
+    public func shouldCollapseLabel(label: ExpandableLabel) -> Bool {
+        return Static.DefaultShouldCollapseValue
+    }
+    public func willCollapseLabel(label: ExpandableLabel) {}
+    public func didCollapseLabel(label: ExpandableLabel) {}
+}
+
+private struct Static {
+    private static let DefaultShouldExpandValue : Bool = true
+    private static let DefaultShouldCollapseValue : Bool = false
 }
 
 /**
@@ -201,13 +219,15 @@ public class ExpandableLabel : UILabel {
     
     public override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         if !collapsed {
-            delegate?.willCollapseLabel(self)
-            collapsed = true
-            delegate?.didCollapseLabel(self)
-            linkHighlighted = highlighted
-            setNeedsDisplay()
+            if shouldCollapse() {
+                delegate?.willCollapseLabel(self)
+                collapsed = true
+                delegate?.didCollapseLabel(self)
+                linkHighlighted = highlighted
+                setNeedsDisplay()
+            }
         }else{
-            if setLinkHighlighted(touches, event: event, highlighted: false) {
+            if shouldExpand() && setLinkHighlighted(touches, event: event, highlighted: false) {
                 delegate?.willExpandLabel(self)
                 collapsed = false
                 delegate?.didExpandLabel(self)
@@ -231,6 +251,14 @@ public class ExpandableLabel : UILabel {
             }
         }
         return false
+    }
+    
+    private func shouldCollapse() -> Bool {
+        return delegate?.shouldCollapseLabel(self) ?? Static.DefaultShouldCollapseValue
+    }
+    
+    private func shouldExpand() -> Bool {
+        return delegate?.shouldExpandLabel(self) ?? Static.DefaultShouldExpandValue
     }
 }
 
