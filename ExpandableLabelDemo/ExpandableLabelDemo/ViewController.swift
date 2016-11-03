@@ -31,18 +31,18 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        states = [Bool](count: numberOfCells, repeatedValue: true)
+        states = [Bool](repeating: true, count: numberOfCells)
         tableView.estimatedRowHeight = 44.0
         tableView.rowHeight = UITableViewAutomaticDimension
     }
 
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         tableView.reloadData()
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell") as! ExpandableCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ExpandableCell
         cell.expandableLabel.delegate = self
         cell.expandableLabel.numberOfLines = 3
         cell.expandableLabel.collapsed = states[indexPath.row]
@@ -50,7 +50,7 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         return cell
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return numberOfCells
     }
     
@@ -63,31 +63,31 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
     // MARK: ExpandableLabel Delegate
     //
     
-    func willExpandLabel(label: ExpandableLabel) {
+    func willExpandLabel(_ label: ExpandableLabel) {
         tableView.beginUpdates()
     }
     
-    func didExpandLabel(label: ExpandableLabel) {
-        let point = label.convertPoint(CGPointZero, toView: tableView)
-        if let indexPath = tableView.indexPathForRowAtPoint(point) as NSIndexPath? {
+    func didExpandLabel(_ label: ExpandableLabel) {
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
             states[indexPath.row] = false
         }
         tableView.endUpdates()
     }
     
-    func willCollapseLabel(label: ExpandableLabel) {
+    func willCollapseLabel(_ label: ExpandableLabel) {
         tableView.beginUpdates()
     }
     
-    func didCollapseLabel(label: ExpandableLabel) {
-        let point = label.convertPoint(CGPointZero, toView: tableView)
-        if let indexPath = tableView.indexPathForRowAtPoint(point) as NSIndexPath? {
+    func didCollapseLabel(_ label: ExpandableLabel) {
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
             states[indexPath.row] = true
         }
         tableView.endUpdates()
     }
     
-    func shouldCollapseLabel(label: ExpandableLabel) -> Bool {
+    func shouldCollapseLabel(_ label: ExpandableLabel) -> Bool {
         return true
     }
 }
