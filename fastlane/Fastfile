@@ -1,0 +1,22 @@
+fastlane_version "1.66.0"
+
+desc "Release new pod version"
+lane :release do |options|
+    skip_docs
+    target_version = options[:version]
+    raise "The version is missing. Use `fastlane release version:{version_number}`.`" if target_version.nil?
+    
+    path = options[:path] || Dir["../*.podspec"].first[3..Dir["../*.podspec"].first.length]
+    raise "The podspec file path is missing. Place a podspec file in the root directory or use `fastlane release version:{version_number} path:{path_to_podspec}`.`" if path.nil?
+    
+    ensure_git_branch
+    ensure_git_status_clean
+    
+    version_bump_podspec(path: path, version_number: target_version)
+    
+    git_commit(path: path, message: "Bump version to #{target_version}")
+    add_git_tag tag: target_version
+    
+    push_to_git_remote
+    pod_push
+end

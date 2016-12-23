@@ -15,5 +15,6 @@ profile
 *.moved-aside
 Pods/
 Podfile.lock
+fastlane/report.xml
 
 .DS_Store
