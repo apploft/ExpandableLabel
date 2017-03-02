@@ -200,7 +200,6 @@ open class ExpandableLabel : UILabel {
                 }
             } else {
                 collapsedLines.append(text.textForLine(lines[0]))
-                //increaseTouchAreaForMore()
             }
             collapsedLines.append(modifiedLastLineText)
             return collapsedLines
@@ -298,12 +297,6 @@ open class ExpandableLabel : UILabel {
     }
 }
 
-extension ExpandableLabel {
-    
-    
-    
-    
-}
 
 // MARK: Convenience Methods
 
