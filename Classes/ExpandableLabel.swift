@@ -21,6 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+typealias LineIndexTuple = (line: CTLine, index: Int)
+
 import UIKit
 
 /**
@@ -75,6 +77,7 @@ open class ExpandableLabel : UILabel {
             self.collapsedAttributedLink = collapsedAttributedLink.copyWithAddedFontAttribute(font)
         }
     }
+    
     
     /// Set the ellipsis that appears just after the text and before the link.
     /// The default value is "...". Can be nil.
@@ -173,7 +176,8 @@ open class ExpandableLabel : UILabel {
                 lineTextWithLink = lineTextWithAddedLink
                 let lineTextWithLastWordRemovedRect = lineTextWithLastWordRemoved.boundingRectForWidth(self.frame.size.width)
                 let wordRect = linkName.boundingRectForWidth(self.frame.size.width)
-                self.linkRect = CGRect(x: lineTextWithLastWordRemovedRect.size.width, y: self.font.lineHeight * CGFloat(self.collapsedNumberOfLines-1), width: wordRect.size.width, height: wordRect.size.height)
+                let width = lineTextWithLastWordRemoved.string == "" ? self.frame.width : wordRect.size.width
+                self.linkRect = CGRect(x: lineTextWithLastWordRemovedRect.size.width, y: self.font.lineHeight * CGFloat(self.collapsedNumberOfLines-1), width: width, height: wordRect.size.height)
                 stop.pointee = true
             }
         }
@@ -182,26 +186,58 @@ open class ExpandableLabel : UILabel {
     
     
     fileprivate func getCollapsedTextForText(_ text : NSAttributedString?, link: NSAttributedString) -> NSAttributedString? {
-        if let text = text {
-            let lines = text.linesForWidth(frame.size.width)
-            if (collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count) {
-                let lastLineRef = lines[collapsedNumberOfLines-1] as CTLine
-                let modifiedLastLineText = textWithLinkReplacement(lastLineRef, text: text, linkName: link)
-                
-                let collapsedLines = NSMutableAttributedString()
-                if (collapsedNumberOfLines >= 2) {
-                    for index in 0...collapsedNumberOfLines-2 {
-                        collapsedLines.append(text.textForLine(lines[index]))
-                    }
+        guard let text = text else { return nil }
+        let lines = text.linesForWidth(frame.size.width)
+        if (collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count) {
+            let lastLineRef = lines[collapsedNumberOfLines-1] as CTLine
+            let lineIndex = findLineWithWords(lastLine: lastLineRef, text: text, lines: lines)
+            let modifiedLastLineText = textWithLinkReplacement(lineIndex.line, text: text, linkName: link)
+            let collapsedLines = NSMutableAttributedString()
+            let emptyLineIndent = lineIndex.index == collapsedNumberOfLines-1 ? lineIndex.index : lineIndex.index + 2
+            if (collapsedNumberOfLines - emptyLineIndent > 0) {
+                for index in 0...collapsedNumberOfLines-emptyLineIndent  {
+                    collapsedLines.append(text.textForLine(lines[index]))
                 }
-                collapsedLines.append(modifiedLastLineText)
-                return collapsedLines
+            } else {
+                collapsedLines.append(text.textForLine(lines[0]))
+                //increaseTouchAreaForMore()
             }
-            return text
-        } else {
-            return nil;
+            collapsedLines.append(modifiedLastLineText)
+            return collapsedLines
         }
+        return text
     }
+    
+    fileprivate func  increaseTouchAreaForMore() {
+        guard  let rect = linkRect  else { return }
+        let origin = CGPoint(x: 0, y: rect.origin.y)
+        let allLineArea = CGRect(origin: origin, size: CGSize(width: self.frame.width, height: rect.size.height))
+        self.linkRect = allLineArea
+    }
+    
+    fileprivate func findLineWithWords(lastLine: CTLine, text: NSAttributedString, lines: [CTLine]) -> LineIndexTuple {
+        var lastLineRef = lastLine
+        var lastLineIndex = collapsedNumberOfLines - 1
+        var lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
+        while lineWords.count < 2 && lastLineIndex > 0 {
+            lastLineIndex -=  1
+            lastLineRef = lines[lastLineIndex] as CTLine
+            lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
+        }
+        return (lastLineRef, lastLineIndex)
+    }
+    
+    fileprivate func spiltInToWords(str: NSString) -> [String] {
+        var strings: [String] = []
+        str.enumerateSubstrings(in: NSMakeRange(0, str.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> () in
+            if let unwrappedWord = word {
+                strings.append(unwrappedWord)
+            }
+            if strings.count > 1 { stop.pointee = true }
+        }
+        return strings
+    }
+    
     
     fileprivate func textFitsWidth(_ text : NSAttributedString) -> Bool {
         return (text.boundingRectForWidth(frame.size.width).size.height <= font.lineHeight) as Bool
@@ -262,6 +298,13 @@ open class ExpandableLabel : UILabel {
     }
 }
 
+extension ExpandableLabel {
+    
+    
+    
+    
+}
+
 // MARK: Convenience Methods
 
 private extension NSAttributedString {
@@ -310,6 +353,6 @@ private extension NSAttributedString {
     
     func boundingRectForWidth(_ width : CGFloat) -> CGRect {
         return self.boundingRect(with: CGSize(width: width, height: CGFloat(MAXFLOAT)),
-                                         options: NSStringDrawingOptions.usesLineFragmentOrigin, context: nil)
+                                 options: NSStringDrawingOptions.usesLineFragmentOrigin, context: nil)
     }
 }
