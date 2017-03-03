@@ -44,6 +44,7 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ExpandableCell
         cell.expandableLabel.delegate = self
+        cell.expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [NSForegroundColorAttributeName:UIColor.red], position: NSTextAlignment.center)
         cell.expandableLabel.numberOfLines = 3
         cell.expandableLabel.collapsed = states[indexPath.row]
         cell.expandableLabel.text = preparedSources()[indexPath.row]
@@ -51,7 +52,7 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return numberOfCells
+        return states.count
     }
     
     func preparedSources() -> [String] {
@@ -108,5 +109,31 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         return true
     }
 }
+
+extension String {
+    
+    func specialPriceAttributedStringWith(_ color: UIColor) -> NSMutableAttributedString {
+        let attributes = [NSStrikethroughStyleAttributeName: NSNumber(value: NSUnderlineStyle.styleSingle.rawValue as Int),
+                          NSForegroundColorAttributeName: color, NSFontAttributeName: fontForPrice()]
+        return NSMutableAttributedString(attributedString: NSAttributedString(string: self, attributes: attributes))
+    }
+    
+    func priceAttributedStringWith(_ color: UIColor) -> NSAttributedString {
+        let attributes = [NSForegroundColorAttributeName: color, NSFontAttributeName: fontForPrice()]
+        
+        return NSAttributedString(string: self, attributes: attributes)
+    }
+    
+    func priceAttributedString(_ color: UIColor) -> NSAttributedString {
+        let attributes = [NSForegroundColorAttributeName: color]
+        
+        return NSAttributedString(string: self, attributes: attributes)
+    }
+    
+    fileprivate func fontForPrice() -> UIFont {
+        return UIFont(name: "Helvetica-Neue", size: 13) ?? UIFont()
+    }
+}
+
 
 

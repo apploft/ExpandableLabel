@@ -78,6 +78,11 @@ open class ExpandableLabel : UILabel {
         }
     }
     
+    /// Set the link name (and attributes) that is shown when expanded.
+    /// The default value is "Less". Can be nil.
+    @IBInspectable open var expandedAttributedLink : NSAttributedString?
+    
+    
     
     /// Set the ellipsis that appears just after the text and before the link.
     /// The default value is "...". Can be nil.
@@ -98,6 +103,7 @@ open class ExpandableLabel : UILabel {
     fileprivate let touchSize = CGSize(width: 44, height: 44)
     fileprivate var linkRect : CGRect?
     fileprivate var collapsedNumberOfLines : NSInteger = 0
+    fileprivate var expandedLinkPosition: NSTextAlignment?
     
     open override var numberOfLines: NSInteger {
         didSet {
@@ -123,6 +129,7 @@ open class ExpandableLabel : UILabel {
         isUserInteractionEnabled = true
         lineBreakMode = NSLineBreakMode.byClipping
         numberOfLines = 3
+        expandedAttributedLink = nil
         collapsedAttributedLink = NSAttributedString(string: "More", attributes: [NSFontAttributeName : UIFont.boldSystemFont(ofSize: font.pointSize)])
         ellipsis = NSAttributedString(string: "...")
     }
@@ -130,6 +137,7 @@ open class ExpandableLabel : UILabel {
     open override var text: String? {
         set(text) {
             if let text = text {
+                expandedText = getExpandedTextForText(text, link: expandedAttributedLink)?.copyWithAddedFontAttribute(font)
                 self.attributedText = NSAttributedString(string: text)
             } else {
                 self.attributedText = nil
@@ -143,8 +151,7 @@ open class ExpandableLabel : UILabel {
     open override var attributedText: NSAttributedString? {
         set(attributedText) {
             if let attributedText = attributedText, attributedText.length > 0 {
-                self.expandedText = attributedText.copyWithAddedFontAttribute(font)
-                self.collapsedText = getCollapsedTextForText(self.expandedText, link: (linkHighlighted) ? collapsedAttributedLink.copyWithHighlightedColor() : collapsedAttributedLink)
+                self.collapsedText = getCollapsedTextForText(attributedText, link: (linkHighlighted) ? collapsedAttributedLink.copyWithHighlightedColor() : collapsedAttributedLink)
                 super.attributedText = (self.collapsed) ? self.collapsedText : self.expandedText;
             } else {
                 super.attributedText = nil
@@ -206,31 +213,31 @@ open class ExpandableLabel : UILabel {
         }
         return text
     }
-
-
-fileprivate func findLineWithWords(lastLine: CTLine, text: NSAttributedString, lines: [CTLine]) -> LineIndexTuple {
-    var lastLineRef = lastLine
-    var lastLineIndex = collapsedNumberOfLines - 1
-    var lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
-    while lineWords.count < 2 && lastLineIndex > 0 {
-        lastLineIndex -=  1
-        lastLineRef = lines[lastLineIndex] as CTLine
-        lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
-    }
-    return (lastLineRef, lastLineIndex)
-}
-
-fileprivate func spiltInToWords(str: NSString) -> [String] {
-    var strings: [String] = []
-    str.enumerateSubstrings(in: NSMakeRange(0, str.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> () in
-        if let unwrappedWord = word {
-            strings.append(unwrappedWord)
+    
+    
+    fileprivate func findLineWithWords(lastLine: CTLine, text: NSAttributedString, lines: [CTLine]) -> LineIndexTuple {
+        var lastLineRef = lastLine
+        var lastLineIndex = collapsedNumberOfLines - 1
+        var lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
+        while lineWords.count < 2 && lastLineIndex > 0 {
+            lastLineIndex -=  1
+            lastLineRef = lines[lastLineIndex] as CTLine
+            lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
         }
-        if strings.count > 1 { stop.pointee = true }
+        return (lastLineRef, lastLineIndex)
     }
-    return strings
-}
-
+    
+    fileprivate func spiltInToWords(str: NSString) -> [String] {
+        var strings: [String] = []
+        str.enumerateSubstrings(in: NSMakeRange(0, str.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> () in
+            if let unwrappedWord = word {
+                strings.append(unwrappedWord)
+            }
+            if strings.count > 1 { stop.pointee = true }
+        }
+        return strings
+    }
+    
     fileprivate func textFitsWidth(_ text : NSAttributedString) -> Bool {
         return (text.boundingRectForWidth(frame.size.width).size.height <= font.lineHeight) as Bool
     }
@@ -290,6 +297,34 @@ fileprivate func spiltInToWords(str: NSString) -> [String] {
     }
 }
 
+extension ExpandableLabel {
+    
+    fileprivate func getExpandedTextForText(_ text : String?, link: NSAttributedString?) -> NSAttributedString? {
+        guard let text = text else { return nil }
+        let expandedText = NSMutableAttributedString()
+        expandedText.append(NSAttributedString(string: "\(text)"))
+        if let link = link {
+            let spaceOrNewLine = expandedLinkPosition == nil ? "  " : "\n"
+            expandedText.append(NSMutableAttributedString(string: "\(spaceOrNewLine)\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)))
+        }
+        
+        return expandedText
+    }
+    
+    func setLessLinkWith(lessLink: String, attributes: [String: AnyObject], position: NSTextAlignment?) {
+        var alignedattributes = attributes
+        if let pos = position {
+            expandedLinkPosition = pos
+            let titleParagraphStyle = NSMutableParagraphStyle()
+            titleParagraphStyle.alignment = pos
+            alignedattributes[NSParagraphStyleAttributeName] = titleParagraphStyle
+            
+        }
+        expandedAttributedLink = NSMutableAttributedString(string: lessLink,
+                                                           attributes: alignedattributes)
+    }
+    
+}
 
 // MARK: Convenience Methods
 
