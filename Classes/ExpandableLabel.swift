@@ -160,8 +160,8 @@ open class ExpandableLabel : UILabel {
         attributedText = expandedText
     }
     
-    fileprivate func textWithLinkReplacement(_ line : CTLine, text : NSAttributedString, linkName : NSAttributedString) -> NSAttributedString {
-        let lineText = text.textForLine(line)
+    fileprivate func textWithLinkReplacement(_ lineIndex : LineIndexTuple, text : NSAttributedString, linkName : NSAttributedString) -> NSAttributedString {
+        let lineText = text.textForLine(lineIndex.line)
         var lineTextWithLink = lineText
         (lineText.string as NSString).enumerateSubstrings(in: NSMakeRange(0, lineText.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> () in
             let lineTextWithLastWordRemoved = lineText.attributedSubstring(from: NSMakeRange(0, subRange.location))
@@ -177,13 +177,12 @@ open class ExpandableLabel : UILabel {
                 let lineTextWithLastWordRemovedRect = lineTextWithLastWordRemoved.boundingRectForWidth(self.frame.size.width)
                 let wordRect = linkName.boundingRectForWidth(self.frame.size.width)
                 let width = lineTextWithLastWordRemoved.string == "" ? self.frame.width : wordRect.size.width
-                self.linkRect = CGRect(x: lineTextWithLastWordRemovedRect.size.width, y: self.font.lineHeight * CGFloat(self.collapsedNumberOfLines-1), width: width, height: wordRect.size.height)
+                self.linkRect = CGRect(x: lineTextWithLastWordRemovedRect.size.width, y: self.font.lineHeight * CGFloat(lineIndex.index), width: width, height: wordRect.size.height)
                 stop.pointee = true
             }
         }
         return lineTextWithLink
     }
-    
     
     fileprivate func getCollapsedTextForText(_ text : NSAttributedString?, link: NSAttributedString) -> NSAttributedString? {
         guard let text = text else { return nil }
@@ -191,10 +190,11 @@ open class ExpandableLabel : UILabel {
         if (collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count) {
             let lastLineRef = lines[collapsedNumberOfLines-1] as CTLine
             let lineIndex = findLineWithWords(lastLine: lastLineRef, text: text, lines: lines)
-            let modifiedLastLineText = textWithLinkReplacement(lineIndex.line, text: text, linkName: link)
+            let modifiedLastLineText = textWithLinkReplacement(lineIndex, text: text, linkName: link)
             let collapsedLines = NSMutableAttributedString()
-            let emptyLineIndent = lineIndex.index == collapsedNumberOfLines-1 ? lineIndex.index : lineIndex.index + 2
-            if (collapsedNumberOfLines - emptyLineIndent > 0) {
+            let differenceFromStart = (collapsedNumberOfLines-1) - lineIndex.index
+            let emptyLineIndent = (2 + differenceFromStart)
+            if collapsedNumberOfLines-emptyLineIndent > 0 {
                 for index in 0...collapsedNumberOfLines-emptyLineIndent  {
                     collapsedLines.append(text.textForLine(lines[index]))
                 }
@@ -206,38 +206,31 @@ open class ExpandableLabel : UILabel {
         }
         return text
     }
-    
-    fileprivate func  increaseTouchAreaForMore() {
-        guard  let rect = linkRect  else { return }
-        let origin = CGPoint(x: 0, y: rect.origin.y)
-        let allLineArea = CGRect(origin: origin, size: CGSize(width: self.frame.width, height: rect.size.height))
-        self.linkRect = allLineArea
+
+
+fileprivate func findLineWithWords(lastLine: CTLine, text: NSAttributedString, lines: [CTLine]) -> LineIndexTuple {
+    var lastLineRef = lastLine
+    var lastLineIndex = collapsedNumberOfLines - 1
+    var lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
+    while lineWords.count < 2 && lastLineIndex > 0 {
+        lastLineIndex -=  1
+        lastLineRef = lines[lastLineIndex] as CTLine
+        lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
     }
-    
-    fileprivate func findLineWithWords(lastLine: CTLine, text: NSAttributedString, lines: [CTLine]) -> LineIndexTuple {
-        var lastLineRef = lastLine
-        var lastLineIndex = collapsedNumberOfLines - 1
-        var lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
-        while lineWords.count < 2 && lastLineIndex > 0 {
-            lastLineIndex -=  1
-            lastLineRef = lines[lastLineIndex] as CTLine
-            lineWords = spiltInToWords(str: text.textForLine(lastLineRef).string as NSString)
+    return (lastLineRef, lastLineIndex)
+}
+
+fileprivate func spiltInToWords(str: NSString) -> [String] {
+    var strings: [String] = []
+    str.enumerateSubstrings(in: NSMakeRange(0, str.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> () in
+        if let unwrappedWord = word {
+            strings.append(unwrappedWord)
         }
-        return (lastLineRef, lastLineIndex)
+        if strings.count > 1 { stop.pointee = true }
     }
-    
-    fileprivate func spiltInToWords(str: NSString) -> [String] {
-        var strings: [String] = []
-        str.enumerateSubstrings(in: NSMakeRange(0, str.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> () in
-            if let unwrappedWord = word {
-                strings.append(unwrappedWord)
-            }
-            if strings.count > 1 { stop.pointee = true }
-        }
-        return strings
-    }
-    
-    
+    return strings
+}
+
     fileprivate func textFitsWidth(_ text : NSAttributedString) -> Bool {
         return (text.boundingRectForWidth(frame.size.width).size.height <= font.lineHeight) as Bool
     }
