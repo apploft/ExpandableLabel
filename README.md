@@ -32,16 +32,27 @@ expandableLabel.collapsed = true
 ##### collapsedAttributedLink
 Set the link name (and attributes) that is shown when collapsed.
 
-##### expandedAttributedLink
-Set the link name (and attributes) that is shown when expanded.
-It is optional It can be nil.
-Position optional can be one of NSAlignement values : .left, right, .center ...
-If Position will be nil then Close link will after end of the text
-expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [NSForegroundColorAttributeName:UIColor.red], position: nil)
-
 ```swift
 expandableLabel.collapsedAttributedLink = NSAttributedString(string: "Read More")
 ```
+
+##### expandedAttributedLink
+Set the link name (and attributes) that is shown when expanded.
+It is optional and can be nil.
+
+```swift
+expandableLabel.expandedAttributedLink = NSAttributedString(string: "Read Less")
+```
+
+##### setLessLinkWith(lessLink: String, attributes: [String: AnyObject], position: NSTextAlignment?)
+
+Setter for expandedAttributedLink with caption, String attributes and optional horizontal alignment as NSTextAlignment.
+If the parameter position is nil, the collapse link will be inserted at the end of the text.
+
+```swift
+expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [NSForegroundColorAttributeName:UIColor.red], position: nil)
+```
+<img width="320" src="https://raw.githubusercontent.com/apploft/ExpandableLabel/master/Resources/MoreLessExpand.gif">
 
 ##### ellipsis
 Set the ellipsis that appears just after the text and before the link.
@@ -49,7 +60,6 @@ Set the ellipsis that appears just after the text and before the link.
 ```swift
 expandableLabel.ellipsis = NSAttributedString(string: "...")
 ```
-<img src="https://raw.githubusercontent.com/apploft/ExpandableLabel/master/Resources/MoreLessExpand.gif">
 
 
 # License
