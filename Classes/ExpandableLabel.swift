@@ -242,6 +242,11 @@ open class ExpandableLabel : UILabel {
         return (text.boundingRectForWidth(frame.size.width).size.height <= font.lineHeight) as Bool
     }
     
+    fileprivate func textWillBeTruncated(_ text : NSAttributedString) -> Bool {
+        let lines = text.linesForWidth(frame.size.width)
+        return collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count
+    }
+    
     // MARK: Touch Handling
     
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -302,8 +307,8 @@ extension ExpandableLabel {
     fileprivate func getExpandedTextForText(_ text : String?, link: NSAttributedString?) -> NSAttributedString? {
         guard let text = text else { return nil }
         let expandedText = NSMutableAttributedString()
-        expandedText.append(NSAttributedString(string: "\(text)"))
-        if let link = link {
+		expandedText.append(NSAttributedString(string: "\(text)", attributes: [ NSFontAttributeName : font]))
+        if let link = link, textWillBeTruncated(expandedText) {
             let spaceOrNewLine = expandedLinkPosition == nil ? "  " : "\n"
             expandedText.append(NSMutableAttributedString(string: "\(spaceOrNewLine)\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)))
         }
