@@ -89,6 +89,9 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         let point = label.convert(CGPoint.zero, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
             states[indexPath.row] = false
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
         }
         tableView.endUpdates()
     }
@@ -101,6 +104,9 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         let point = label.convert(CGPoint.zero, to: tableView)
         if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
             states[indexPath.row] = true
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
         }
         tableView.endUpdates()
     }
