@@ -316,7 +316,7 @@ extension ExpandableLabel {
         return expandedText
     }
     
-    func setLessLinkWith(lessLink: String, attributes: [String: AnyObject], position: NSTextAlignment?) {
+    open func setLessLinkWith(lessLink: String, attributes: [String: AnyObject], position: NSTextAlignment?) {
         var alignedattributes = attributes
         if let pos = position {
             expandedLinkPosition = pos
