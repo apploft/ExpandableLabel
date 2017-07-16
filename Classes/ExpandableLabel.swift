@@ -142,8 +142,11 @@ open class ExpandableLabel: UILabel {
         set(attributedText) {
             if let attributedText = attributedText, attributedText.length > 0 {
                 self.collapsedText = getCollapsedText(for: attributedText, link: (linkHighlighted) ? collapsedAttributedLink.copyWithHighlightedColor() : collapsedAttributedLink)
+                self.expandedText = attributedText
                 super.attributedText = (self.collapsed) ? self.collapsedText : self.expandedText
             } else {
+                self.expandedText = nil
+                self.collapsedText = nil
                 super.attributedText = nil
             }
         }
