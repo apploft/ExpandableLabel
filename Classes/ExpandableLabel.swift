@@ -49,6 +49,11 @@ open class ExpandableLabel: UILabel {
         didSet {
             super.attributedText = (collapsed) ? self.collapsedText : self.expandedText
             super.numberOfLines = (collapsed) ? self.collapsedNumberOfLines : 0
+            if let animationView = animationView {
+                UIView.animate(withDuration: 0.5) {
+                    animationView.layoutIfNeeded()
+                }
+            }
         }
     }
     
@@ -81,6 +86,14 @@ open class ExpandableLabel: UILabel {
             self.ellipsis = ellipsis?.copyWithAddedFontAttribute(font)
         }
     }
+    
+    
+    
+    /// Set a view to animate changes of the label collapsed state with. If this value is nil, no animation occurs.
+    /// Usually you assign the superview of this label or a UIScrollView in which this label sits.
+    /// Also don't forget to set the contentMode of this label to top to smoothly reveal the hidden lines.
+    /// The default value is 'nil'.
+    open var animationView: UIView?
     
     
     //
