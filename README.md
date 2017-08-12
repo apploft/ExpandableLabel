@@ -4,14 +4,29 @@ ExpandableLabel is a simple UILabel subclass that shows a tappable link if the c
 <img src="https://raw.githubusercontent.com/apploft/ExpandableLabel/master/Resources/ExpandableLabel.gif">
 
 # Installation
-Install via cocoapods by adding this to your Podfile:
 
-```
+### [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)
+
+Add this to your Podfile:
+
+```ruby
 pod "ExpandableLabel"
 ```
 
+### [Carthage](https://github.com/Carthage/Carthage)
+
+Add this to your Cartfile:
+
+```ruby
+github "apploft/ExpandableLabel"
+```
+
+Run `carthage` to build the framework and drag the built `ExpandableLabel.framework` into your Xcode project.
+
 # Usage
 Using ExpandableLabel is very simple. In your storyboard, set the custom class of your UILabel to ExpandableLabel and set the desired number of lines (for the collapsed state):
+
+_**Note:** In Carthage, set Module to `ExpandableLabel`._
 
 ```swift
 expandableLabel.numberOfLines = 3
