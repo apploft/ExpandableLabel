@@ -32,7 +32,7 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         super.viewDidLoad()
         
         states = [Bool](repeating: true, count: numberOfCells)
-        tableView.estimatedRowHeight = 44.0
+        tableView.estimatedRowHeight = 44
         tableView.rowHeight = UITableViewAutomaticDimension
     }
 
@@ -45,9 +45,15 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ExpandableCell
         cell.expandableLabel.delegate = self
         cell.expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [NSForegroundColorAttributeName:UIColor.red], position: NSTextAlignment.center)
-        cell.expandableLabel.numberOfLines = 3
+        
+        cell.layoutIfNeeded()
+        
+        cell.expandableLabel.shouldCollapse = true
+        cell.expandableLabel.textReplacementType = preparedSources()[indexPath.row].1
+        cell.expandableLabel.numberOfLines =  preparedSources()[indexPath.row].2
         cell.expandableLabel.collapsed = states[indexPath.row]
-        cell.expandableLabel.text = preparedSources()[indexPath.row]
+        cell.expandableLabel.text = preparedSources()[indexPath.row].0
+        
         return cell
     }
     
@@ -55,9 +61,17 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         return states.count
     }
     
-    func preparedSources() -> [String] {
-        return [loremIpsumText(), textWithNewLinesInCollapsedLine(), textWithLongWordInCollapsedLine(), textWithVeryLongWords(),
-                loremIpsumText(), loremIpsumText(), loremIpsumText(), loremIpsumText(), loremIpsumText(), loremIpsumText()]
+    func preparedSources() -> [(String, ExpandableLabel.TextReplacementType, Int)] {
+        return [(loremIpsumText(), .word, 3),
+                (textWithNewLinesInCollapsedLine(), .word, 2),
+                (textWithLongWordInCollapsedLine(), .character, 1),
+                (textWithVeryLongWords(), .character, 1),
+                (loremIpsumText(), .word, 4),
+                (loremIpsumText(), .character, 3),
+                (loremIpsumText(), .word, 2),
+                (loremIpsumText(), .character, 5),
+                (loremIpsumText(), .word, 3),
+                (loremIpsumText(), .character, 1)]
     }
     
     
@@ -109,10 +123,6 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
             }
         }
         tableView.endUpdates()
-    }
-    
-    func shouldCollapseLabel(_ label: ExpandableLabel) -> Bool {
-        return true
     }
 }
 
