@@ -44,7 +44,7 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ExpandableCell
         cell.expandableLabel.delegate = self
-        cell.expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [NSForegroundColorAttributeName:UIColor.red], position: NSTextAlignment.center)
+        cell.expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [.foregroundColor: UIColor.red], position: NSTextAlignment.center)
         
         cell.layoutIfNeeded()
         
@@ -129,19 +129,19 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
 extension String {
     
     func specialPriceAttributedStringWith(_ color: UIColor) -> NSMutableAttributedString {
-        let attributes = [NSStrikethroughStyleAttributeName: NSNumber(value: NSUnderlineStyle.styleSingle.rawValue as Int),
-                          NSForegroundColorAttributeName: color, NSFontAttributeName: fontForPrice()]
+        let attributes = [NSAttributedStringKey.strikethroughStyle: NSNumber(value: NSUnderlineStyle.styleSingle.rawValue as Int),
+                          .foregroundColor: color, .font: fontForPrice()]
         return NSMutableAttributedString(attributedString: NSAttributedString(string: self, attributes: attributes))
     }
     
     func priceAttributedStringWith(_ color: UIColor) -> NSAttributedString {
-        let attributes = [NSForegroundColorAttributeName: color, NSFontAttributeName: fontForPrice()]
+        let attributes = [NSAttributedStringKey.foregroundColor: color, .font: fontForPrice()]
         
         return NSAttributedString(string: self, attributes: attributes)
     }
     
     func priceAttributedString(_ color: UIColor) -> NSAttributedString {
-        let attributes = [NSForegroundColorAttributeName: color]
+        let attributes = [NSAttributedStringKey.foregroundColor: color]
         
         return NSAttributedString(string: self, attributes: attributes)
     }
