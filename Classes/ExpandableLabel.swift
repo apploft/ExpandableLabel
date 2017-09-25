@@ -157,7 +157,7 @@ open class ExpandableLabel: UILabel {
     
     open override var attributedText: NSAttributedString? {
         set(attributedText) {
-            if let attributedText = attributedText?.copyWithAddedFontAttribute(font), attributedText.length > 0 {
+            if let attributedText = attributedText?.copyWithAddedFontAttribute(font).copyWithParagraphAttribute(font), attributedText.length > 0 {
                 self.collapsedText = getCollapsedText(for: attributedText, link: (linkHighlighted) ? collapsedAttributedLink.copyWithHighlightedColor() : self.collapsedAttributedLink)
                 self.expandedText = getExpandedText(for: attributedText, link: (linkHighlighted) ? expandedAttributedLink?.copyWithHighlightedColor() : self.expandedAttributedLink)
                 super.attributedText = (self.collapsed) ? self.collapsedText : self.expandedText
@@ -202,13 +202,23 @@ open class ExpandableLabel: UILabel {
     
     fileprivate func textReplaceWithLink(_ lineIndex: LineIndexTuple, text: NSAttributedString, linkName: NSAttributedString) -> NSAttributedString {
         let lineText = text.text(for: lineIndex.line)
+        let lineTextTrimmedNewLines = NSMutableAttributedString()
+        lineTextTrimmedNewLines.append(lineText)
+        let nsString = lineTextTrimmedNewLines.string as NSString
+        let range = nsString.rangeOfCharacter(from: CharacterSet.newlines)
+        if range.length > 0 {
+            lineTextTrimmedNewLines.replaceCharacters(in: range, with: "")
+        }
         let linkText = NSMutableAttributedString()
         if let ellipsis = self.ellipsis {
             linkText.append(ellipsis)
             linkText.append(NSAttributedString(string: " ", attributes: [.font: self.font]))
         }
         linkText.append(linkName)
-        let truncatedString = lineText.attributedSubstring(from: NSMakeRange(0, lineText.length - linkText.length))
+        
+        let lengthDifference = lineTextTrimmedNewLines.string.composedCount - linkText.string.composedCount
+        let truncatedString = lineTextTrimmedNewLines.attributedSubstring(
+            from: NSMakeRange(0, lengthDifference >= 0 ? lengthDifference : lineTextTrimmedNewLines.string.composedCount))
         let lineTextWithLink = NSMutableAttributedString(attributedString: truncatedString)
         lineTextWithLink.append(linkText)
         return lineTextWithLink
@@ -220,7 +230,7 @@ open class ExpandableLabel: UILabel {
         expandedText.append(text)
         if let link = link, textWillBeTruncated(expandedText) {
             let spaceOrNewLine = expandedLinkPosition == nil ? "  " : "\n"
-            expandedText.append(NSMutableAttributedString(string: "\(spaceOrNewLine)\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)))
+            expandedText.append(NSMutableAttributedString(string: "\(spaceOrNewLine)\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)).copyWithAddedFontAttribute(font))
             expandedLinkTextRange = NSMakeRange(expandedText.length - link.length, link.length)
         }
         
@@ -232,17 +242,32 @@ open class ExpandableLabel: UILabel {
         let lines = text.lines(for: frame.size.width)
         if collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count {
             let lastLineRef = lines[collapsedNumberOfLines-1] as CTLine
-            let lineIndex = findLineWithWords(lastLine: lastLineRef, text: text, lines: lines)
-            let modifiedLastLineText = (self.textReplacementType == .word) ?
-                textReplaceWordWithLink(lineIndex, text: text, linkName: link) :
-                textReplaceWithLink(lineIndex, text: text, linkName: link)
-            let collapsedLines = NSMutableAttributedString()
-            for index in 0..<lineIndex.index {
-                collapsedLines.append(text.text(for:lines[index]))
+            var lineIndex: LineIndexTuple?
+            var modifiedLastLineText: NSAttributedString?
+            
+            if self.textReplacementType == .word {
+                lineIndex = findLineWithWords(lastLine: lastLineRef, text: text, lines: lines)
+                if let lineIndex = lineIndex {
+                    modifiedLastLineText = textReplaceWordWithLink(lineIndex, text: text, linkName: link)
+                }
+            } else {
+                lineIndex = (lastLineRef, collapsedNumberOfLines - 1)
+                if let lineIndex = lineIndex {
+                    modifiedLastLineText = textReplaceWithLink(lineIndex, text: text, linkName: link)
+                }
             }
-            collapsedLines.append(modifiedLastLineText)
-            collapsedLinkTextRange = NSMakeRange(collapsedLines.length - link.length, link.length)
-            return collapsedLines
+            
+            if let lineIndex = lineIndex, let modifiedLastLineText = modifiedLastLineText {
+                let collapsedLines = NSMutableAttributedString()
+                for index in 0..<lineIndex.index {
+                    collapsedLines.append(text.text(for:lines[index]))
+                }
+                collapsedLines.append(modifiedLastLineText)
+                collapsedLinkTextRange = NSMakeRange(collapsedLines.length - link.length, link.length)
+                return collapsedLines
+            } else {
+                return nil
+            }
         }
         return text
     }
@@ -337,6 +362,7 @@ open class ExpandableLabel: UILabel {
         
         textContainer.lineFragmentPadding = 0.0
         textContainer.lineBreakMode = label.lineBreakMode
+        textContainer.heightTracksTextView = true
         textContainer.maximumNumberOfLines = label.numberOfLines
         let labelSize = label.bounds.size
         textContainer.size = labelSize
@@ -419,6 +445,17 @@ private extension NSAttributedString {
         return font != nil
     }
     
+    func copyWithParagraphAttribute(_ font: UIFont) -> NSAttributedString {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.0;
+        paragraphStyle.alignment = .left
+        paragraphStyle.minimumLineHeight = font.lineHeight;
+        paragraphStyle.maximumLineHeight = font.lineHeight;
+        let copy = NSMutableAttributedString(attributedString: self)
+        copy.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: copy.length))
+        return copy
+    }
+    
     func copyWithAddedFontAttribute(_ font: UIFont) -> NSAttributedString {
         if !hasFontAttribute() {
             let copy = NSMutableAttributedString(attributedString: self)
@@ -430,7 +467,8 @@ private extension NSAttributedString {
     
     func copyWithHighlightedColor() -> NSAttributedString {
         let alphaComponent = CGFloat(0.5)
-        let baseColor: UIColor = (self.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? UIColor)?.withAlphaComponent(alphaComponent) ?? UIColor.black.withAlphaComponent(alphaComponent)
+        let baseColor: UIColor = (self.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? UIColor)?.withAlphaComponent(alphaComponent) ??
+            UIColor.black.withAlphaComponent(alphaComponent)
         let highlightedCopy = NSMutableAttributedString(attributedString: self)
         let range = NSRange(location: 0, length: highlightedCopy.length)
         highlightedCopy.removeAttribute(.foregroundColor, range: range)
@@ -459,5 +497,13 @@ private extension NSAttributedString {
     func boundingRect(for width: CGFloat) -> CGRect {
         return self.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
                                  options: .usesLineFragmentOrigin, context: nil)
+    }
+}
+
+extension String {
+    var composedCount : Int {
+        var count = 0
+        enumerateSubstrings(in: startIndex..<endIndex, options: .byComposedCharacterSequences) { _,_,_,_  in count += 1 }
+        return count
     }
 }

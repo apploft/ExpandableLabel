@@ -25,7 +25,7 @@ import UIKit
 
 class ViewController: UITableViewController, ExpandableLabelDelegate {
 
-    let numberOfCells : NSInteger = 10
+    let numberOfCells : NSInteger = 12
     var states : Array<Bool>!
     
     override func viewDidLoad() {
@@ -42,17 +42,20 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let currentSource = preparedSources()[indexPath.row]
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell") as! ExpandableCell
         cell.expandableLabel.delegate = self
-        cell.expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [.foregroundColor: UIColor.red], position: NSTextAlignment.center)
+        
+        cell.expandableLabel.setLessLinkWith(lessLink: "Close", attributes: [.foregroundColor:UIColor.red], position: currentSource.textAlignment)
         
         cell.layoutIfNeeded()
         
         cell.expandableLabel.shouldCollapse = true
-        cell.expandableLabel.textReplacementType = preparedSources()[indexPath.row].1
-        cell.expandableLabel.numberOfLines =  preparedSources()[indexPath.row].2
+        cell.expandableLabel.textReplacementType = currentSource.textReplacementType
+        cell.expandableLabel.numberOfLines = currentSource.numberOfLines
         cell.expandableLabel.collapsed = states[indexPath.row]
-        cell.expandableLabel.text = preparedSources()[indexPath.row].0
+        cell.expandableLabel.text = currentSource.text
         
         return cell
     }
@@ -61,17 +64,19 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         return states.count
     }
     
-    func preparedSources() -> [(String, ExpandableLabel.TextReplacementType, Int)] {
-        return [(loremIpsumText(), .word, 3),
-                (textWithNewLinesInCollapsedLine(), .word, 2),
-                (textWithLongWordInCollapsedLine(), .character, 1),
-                (textWithVeryLongWords(), .character, 1),
-                (loremIpsumText(), .word, 4),
-                (loremIpsumText(), .character, 3),
-                (loremIpsumText(), .word, 2),
-                (loremIpsumText(), .character, 5),
-                (loremIpsumText(), .word, 3),
-                (loremIpsumText(), .character, 1)]
+    func preparedSources() -> [(text: String, textReplacementType: ExpandableLabel.TextReplacementType, numberOfLines: Int, textAlignment: NSTextAlignment)] {
+        return [(loremIpsumText(), .word, 3, .left),
+                (textWithNewLinesInCollapsedLine(), .word, 2, .center),
+                (textWithLongWordInCollapsedLine(), .character, 1, .right),
+                (textWithVeryLongWords(), .character, 1, .left),
+                (loremIpsumText(), .word, 4, .center),
+                (loremIpsumText(), .character, 3, .right),
+                (loremIpsumText(), .word, 2, .left),
+                (loremIpsumText(), .character, 5, .center),
+                (loremIpsumText(), .word, 3, .right),
+                (loremIpsumText(), .character, 1, .left),
+                (textWithShortWordsPerLine(), .character, 3, .center),
+                (textEmojis(), .character, 3, .left)]
     }
     
     
@@ -89,6 +94,14 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
     
     func textWithVeryLongWords() -> String {
         return "FooBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaR FooBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaR FooBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaR FooBaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaR Will show first line and will increase touch area for more voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+    }
+    
+    func textWithShortWordsPerLine() -> String {
+        return "A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN"
+    }
+    
+    func textEmojis() -> String {
+        return "😂😄😃😊😍😗😜😅😓☺️😶🤦😒😁😟😵🙁🤔🤓☹️🙄😑😫😱🙂😧🤵😶👥👩‍❤️‍👩💖👨‍❤️‍💋‍👨💏👩‍👩‍👦‍👦👦👀👨‍👩‍👧‍👦👩‍❤️‍👩🗨🕴👩‍❤️‍💋‍👩👧☹️😠😤😆💚🙄🤒💋😿👄"
     }
     
     //
