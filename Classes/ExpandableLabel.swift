@@ -230,7 +230,8 @@ open class ExpandableLabel: UILabel {
         expandedText.append(text)
         if let link = link, textWillBeTruncated(expandedText) {
             let spaceOrNewLine = expandedLinkPosition == nil ? "  " : "\n"
-            expandedText.append(NSMutableAttributedString(string: "\(spaceOrNewLine)\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)).copyWithAddedFontAttribute(font))
+			expandedText.append(NSAttributedString(string: "\(spaceOrNewLine)"))
+			expandedText.append(NSMutableAttributedString(string: "\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)).copyWithAddedFontAttribute(font))
             expandedLinkTextRange = NSMakeRange(expandedText.length - link.length, link.length)
         }
         
