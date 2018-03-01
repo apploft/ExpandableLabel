@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "ExpandableLabel"
-  s.version      = "0.3.1"
+  s.version      = "0.3.2"
   s.summary      = "A simple UILabel subclass that shows a tappable link if the content doesn't fit the specified number of lines"
 
   s.description  = <<-DESC
