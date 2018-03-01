@@ -124,12 +124,12 @@ open class ExpandableLabel: UILabel {
         commonInit()
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         self.commonInit()
     }
     
-    init() {
+    public init() {
         super.init(frame: .zero)
     }
     
