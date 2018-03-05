@@ -136,7 +136,7 @@ open class ExpandableLabel: UILabel {
     fileprivate func commonInit() {
         self.isUserInteractionEnabled = true
         self.lineBreakMode = .byClipping
-        self.numberOfLines = 3
+        self.collapsedNumberOfLines = numberOfLines
         self.expandedAttributedLink = nil
         self.collapsedAttributedLink = NSAttributedString(string: "More", attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize)])
         self.ellipsis = NSAttributedString(string: "...")
