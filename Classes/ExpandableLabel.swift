@@ -102,8 +102,7 @@ open class ExpandableLabel: UILabel {
     //
     // MARK: Private
     //
-    
-    fileprivate var expandedText: NSAttributedString?
+
     fileprivate var collapsedText: NSAttributedString?
     fileprivate var linkHighlighted: Bool = false
     fileprivate let touchSize = CGSize(width: 44, height: 44)
@@ -154,6 +153,8 @@ open class ExpandableLabel: UILabel {
             return self.attributedText?.string
         }
     }
+
+    open private(set) var expandedText: NSAttributedString?
     
     open override var attributedText: NSAttributedString? {
         set(attributedText) {
