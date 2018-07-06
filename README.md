@@ -3,6 +3,10 @@ ExpandableLabel is a simple UILabel subclass that shows a tappable link if the c
 
 <img src="https://raw.githubusercontent.com/apploft/ExpandableLabel/master/Resources/ExpandableLabel.gif">
 
+## Maintenance
+This project is passively maintained. Pull Requests are welcome, will be reviewed, merged and released as new CocoaPod version as long as they don't break things.
+Nevertheless we don't have the resources to actively continue development, answer issues or give support for integration.
+
 # Installation
 
 ### [CocoaPods](https://guides.cocoapods.org/using/using-cocoapods.html)
