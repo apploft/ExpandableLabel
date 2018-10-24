@@ -394,7 +394,7 @@ open class ExpandableLabel: UILabel {
         setLinkHighlighted(touches, event: event, highlighted: false)
     }
     
-    open func setLessLinkWith(lessLink: String, attributes: [NSAttributedStringKey: AnyObject], position: NSTextAlignment?) {
+    open func setLessLinkWith(lessLink: String, attributes: [NSAttributedString.Key: AnyObject], position: NSTextAlignment?) {
         var alignedattributes = attributes
         if let pos = position {
             expandedLinkPosition = pos
