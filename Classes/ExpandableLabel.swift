@@ -31,7 +31,6 @@ import UIKit
 @objc public protocol ExpandableLabelDelegate: NSObjectProtocol {
     @objc func willExpandLabel(_ label: ExpandableLabel)
     @objc func didExpandLabel(_ label: ExpandableLabel)
-    
     @objc func willCollapseLabel(_ label: ExpandableLabel)
     @objc func didCollapseLabel(_ label: ExpandableLabel)
 }
@@ -40,15 +39,14 @@ import UIKit
  * ExpandableLabel
  */
 @objc open class ExpandableLabel: UILabel {
-    
     public enum TextReplacementType {
         case character
         case word
     }
-    
+
     /// The delegate of ExpandableLabel
     @objc weak open var delegate: ExpandableLabelDelegate?
-    
+
     /// Set 'true' if the label should be collapsed or 'false' for expanded.
     @IBInspectable open var collapsed: Bool = true {
         didSet {
@@ -61,15 +59,15 @@ import UIKit
             }
         }
     }
-    
+
     /// Set 'true' if the label can be expanded or 'false' if not.
     /// The default value is 'true'.
     @IBInspectable open var shouldExpand: Bool = true
-    
+
     /// Set 'true' if the label can be collapsed or 'false' if not.
     /// The default value is 'false'.
     @IBInspectable open var shouldCollapse: Bool = false
-    
+
     /// Set the link name (and attributes) that is shown when collapsed.
     /// The default value is "More". Cannot be nil.
     @objc open var collapsedAttributedLink: NSAttributedString! {
@@ -77,11 +75,11 @@ import UIKit
             self.collapsedAttributedLink = collapsedAttributedLink.copyWithAddedFontAttribute(font)
         }
     }
-    
+
     /// Set the link name (and attributes) that is shown when expanded.
     /// The default value is "Less". Can be nil.
     @objc open var expandedAttributedLink: NSAttributedString?
-    
+
     /// Set the ellipsis that appears just after the text and before the link.
     /// The default value is "...". Can be nil.
     @objc open var ellipsis: NSAttributedString? {
@@ -89,58 +87,44 @@ import UIKit
             self.ellipsis = ellipsis?.copyWithAddedFontAttribute(font)
         }
     }
-    
+
     /// Set a view to animate changes of the label collapsed state with. If this value is nil, no animation occurs.
     /// Usually you assign the superview of this label or a UIScrollView in which this label sits.
     /// Also don't forget to set the contentMode of this label to top to smoothly reveal the hidden lines.
     /// The default value is 'nil'.
     @objc open var animationView: UIView?
-    
+
     open var textReplacementType: TextReplacementType = .word
     
-    
-    //
-    // MARK: Private
-    //
+    private var collapsedText: NSAttributedString?
+    private var linkHighlighted: Bool = false
+    private let touchSize = CGSize(width: 44, height: 44)
+    private var linkRect: CGRect?
+    private var collapsedNumberOfLines: NSInteger = 0
+    private var expandedLinkPosition: NSTextAlignment?
+    private var collapsedLinkTextRange: NSRange?
+    private var expandedLinkTextRange: NSRange?
 
-    fileprivate var collapsedText: NSAttributedString?
-    fileprivate var linkHighlighted: Bool = false
-    fileprivate let touchSize = CGSize(width: 44, height: 44)
-    fileprivate var linkRect: CGRect?
-    fileprivate var collapsedNumberOfLines: NSInteger = 0
-    fileprivate var expandedLinkPosition: NSTextAlignment?
-    fileprivate var collapsedLinkTextRange: NSRange?
-    fileprivate var expandedLinkTextRange: NSRange?
-    
     open override var numberOfLines: NSInteger {
         didSet {
             collapsedNumberOfLines = numberOfLines
         }
     }
-    
+
     @objc public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
-    
+
     @objc public override init(frame: CGRect) {
         super.init(frame: frame)
         self.commonInit()
     }
-    
+
     @objc public init() {
         super.init(frame: .zero)
     }
-    
-    fileprivate func commonInit() {
-        self.isUserInteractionEnabled = true
-        self.lineBreakMode = .byClipping
-        self.collapsedNumberOfLines = numberOfLines
-        self.expandedAttributedLink = nil
-        self.collapsedAttributedLink = NSAttributedString(string: "More", attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize)])
-        self.ellipsis = NSAttributedString(string: "...")
-    }
-    
+
     open override var text: String? {
         set(text) {
             if let text = text {
@@ -155,10 +139,10 @@ import UIKit
     }
 
     open private(set) var expandedText: NSAttributedString?
-    
     open override var attributedText: NSAttributedString? {
         set(attributedText) {
-            if let attributedText = attributedText?.copyWithAddedFontAttribute(font).copyWithParagraphAttribute(font), attributedText.length > 0 {
+            if let attributedText = attributedText?.copyWithAddedFontAttribute(font).copyWithParagraphAttribute(font),
+                attributedText.length > 0 {
                 self.collapsedText = getCollapsedText(for: attributedText, link: (linkHighlighted) ? collapsedAttributedLink.copyWithHighlightedColor() : self.collapsedAttributedLink)
                 self.expandedText = getExpandedText(for: attributedText, link: (linkHighlighted) ? expandedAttributedLink?.copyWithHighlightedColor() : self.expandedAttributedLink)
                 super.attributedText = (self.collapsed) ? self.collapsedText : self.expandedText
@@ -172,12 +156,76 @@ import UIKit
             return super.attributedText
         }
     }
-    
-    open override func layoutSubviews() {
-        super.layoutSubviews()
+
+    open func setLessLinkWith(lessLink: String, attributes: [NSAttributedString.Key: AnyObject], position: NSTextAlignment?) {
+        var alignedattributes = attributes
+        if let pos = position {
+            expandedLinkPosition = pos
+            let titleParagraphStyle = NSMutableParagraphStyle()
+            titleParagraphStyle.alignment = pos
+            alignedattributes[.paragraphStyle] = titleParagraphStyle
+        }
+        expandedAttributedLink = NSMutableAttributedString(string: lessLink,
+                                                           attributes: alignedattributes)
     }
-    
-    fileprivate func textReplaceWordWithLink(_ lineIndex: LineIndexTuple, text: NSAttributedString, linkName: NSAttributedString) -> NSAttributedString {
+}
+
+// MARK: - Touch Handling
+
+extension ExpandableLabel {
+
+    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        setLinkHighlighted(touches, event: event, highlighted: true)
+    }
+
+    open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        setLinkHighlighted(touches, event: event, highlighted: false)
+    }
+
+    open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {
+            return
+        }
+
+        if !collapsed {
+            guard let range = self.expandedLinkTextRange else {
+                return
+            }
+
+            if shouldCollapse && check(touch: touch, inRange: range) {
+                delegate?.willCollapseLabel(self)
+                collapsed = true
+                delegate?.didCollapseLabel(self)
+                linkHighlighted = isHighlighted
+                setNeedsDisplay()
+            }
+        } else {
+            if shouldExpand && setLinkHighlighted(touches, event: event, highlighted: false) {
+                delegate?.willExpandLabel(self)
+                collapsed = false
+                delegate?.didExpandLabel(self)
+            }
+        }
+    }
+
+    open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        setLinkHighlighted(touches, event: event, highlighted: false)
+    }
+}
+
+// MARK: Privates
+
+extension ExpandableLabel {
+    private func commonInit() {
+        isUserInteractionEnabled = true
+        lineBreakMode = .byClipping
+        collapsedNumberOfLines = numberOfLines
+        expandedAttributedLink = nil
+        collapsedAttributedLink = NSAttributedString(string: "More", attributes: [.font: UIFont.boldSystemFont(ofSize: font.pointSize)])
+        ellipsis = NSAttributedString(string: "...")
+    }
+
+    private func textReplaceWordWithLink(_ lineIndex: LineIndexTuple, text: NSAttributedString, linkName: NSAttributedString) -> NSAttributedString {
         let lineText = text.text(for: lineIndex.line)
         var lineTextWithLink = lineText
         (lineText.string as NSString).enumerateSubstrings(in: NSRange(location: 0, length: lineText.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> Void in
@@ -200,8 +248,8 @@ import UIKit
         }
         return lineTextWithLink
     }
-    
-    fileprivate func textReplaceWithLink(_ lineIndex: LineIndexTuple, text: NSAttributedString, linkName: NSAttributedString) -> NSAttributedString {
+
+    private func textReplaceWithLink(_ lineIndex: LineIndexTuple, text: NSAttributedString, linkName: NSAttributedString) -> NSAttributedString {
         let lineText = text.text(for: lineIndex.line)
         let lineTextTrimmedNewLines = NSMutableAttributedString()
         lineTextTrimmedNewLines.append(lineText)
@@ -216,7 +264,7 @@ import UIKit
             linkText.append(NSAttributedString(string: " ", attributes: [.font: self.font]))
         }
         linkText.append(linkName)
-        
+
         let lengthDifference = lineTextTrimmedNewLines.string.composedCount - linkText.string.composedCount
         let truncatedString = lineTextTrimmedNewLines.attributedSubstring(
             from: NSMakeRange(0, lengthDifference >= 0 ? lengthDifference : lineTextTrimmedNewLines.string.composedCount))
@@ -224,29 +272,29 @@ import UIKit
         lineTextWithLink.append(linkText)
         return lineTextWithLink
     }
-    
-    fileprivate func getExpandedText(for text: NSAttributedString?, link: NSAttributedString?) -> NSAttributedString? {
+
+    private func getExpandedText(for text: NSAttributedString?, link: NSAttributedString?) -> NSAttributedString? {
         guard let text = text else { return nil }
         let expandedText = NSMutableAttributedString()
         expandedText.append(text)
         if let link = link, textWillBeTruncated(expandedText) {
             let spaceOrNewLine = expandedLinkPosition == nil ? "  " : "\n"
-			expandedText.append(NSAttributedString(string: "\(spaceOrNewLine)"))
-			expandedText.append(NSMutableAttributedString(string: "\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)).copyWithAddedFontAttribute(font))
+            expandedText.append(NSAttributedString(string: "\(spaceOrNewLine)"))
+            expandedText.append(NSMutableAttributedString(string: "\(link.string)", attributes: link.attributes(at: 0, effectiveRange: nil)).copyWithAddedFontAttribute(font))
             expandedLinkTextRange = NSMakeRange(expandedText.length - link.length, link.length)
         }
-        
+
         return expandedText
     }
-    
-    fileprivate func getCollapsedText(for text: NSAttributedString?, link: NSAttributedString) -> NSAttributedString? {
+
+    private func getCollapsedText(for text: NSAttributedString?, link: NSAttributedString) -> NSAttributedString? {
         guard let text = text else { return nil }
         let lines = text.lines(for: frame.size.width)
         if collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count {
             let lastLineRef = lines[collapsedNumberOfLines-1] as CTLine
             var lineIndex: LineIndexTuple?
             var modifiedLastLineText: NSAttributedString?
-            
+
             if self.textReplacementType == .word {
                 lineIndex = findLineWithWords(lastLine: lastLineRef, text: text, lines: lines)
                 if let lineIndex = lineIndex {
@@ -258,14 +306,15 @@ import UIKit
                     modifiedLastLineText = textReplaceWithLink(lineIndex, text: text, linkName: link)
                 }
             }
-            
+
             if let lineIndex = lineIndex, let modifiedLastLineText = modifiedLastLineText {
                 let collapsedLines = NSMutableAttributedString()
                 for index in 0..<lineIndex.index {
                     collapsedLines.append(text.text(for:lines[index]))
                 }
                 collapsedLines.append(modifiedLastLineText)
-                collapsedLinkTextRange = NSMakeRange(collapsedLines.length - link.length, link.length)
+
+                collapsedLinkTextRange = NSRange(location: collapsedLines.length - link.length, length: link.length)
                 return collapsedLines
             } else {
                 return nil
@@ -273,8 +322,8 @@ import UIKit
         }
         return text
     }
-    
-    fileprivate func findLineWithWords(lastLine: CTLine, text: NSAttributedString, lines: [CTLine]) -> LineIndexTuple {
+
+    private func findLineWithWords(lastLine: CTLine, text: NSAttributedString, lines: [CTLine]) -> LineIndexTuple {
         var lastLineRef = lastLine
         var lastLineIndex = collapsedNumberOfLines - 1
         var lineWords = spiltIntoWords(str: text.text(for: lastLineRef).string as NSString)
@@ -285,8 +334,8 @@ import UIKit
         }
         return (lastLineRef, lastLineIndex)
     }
-    
-    fileprivate func spiltIntoWords(str: NSString) -> [String] {
+
+    private func spiltIntoWords(str: NSString) -> [String] {
         var strings: [String] = []
         str.enumerateSubstrings(in: NSRange(location: 0, length: str.length), options: [.byWords, .reverse]) { (word, subRange, enclosingRange, stop) -> Void in
             if let unwrappedWord = word {
@@ -296,118 +345,17 @@ import UIKit
         }
         return strings
     }
-    
-    open override func sizeToFit() {
-        super.sizeToFit()
-    }
-    
-    fileprivate func textFitsWidth(_ text: NSAttributedString) -> Bool {
+
+    private func textFitsWidth(_ text: NSAttributedString) -> Bool {
         return (text.boundingRect(for: frame.size.width).size.height <= font.lineHeight) as Bool
     }
-    
-    fileprivate func textWillBeTruncated(_ text: NSAttributedString) -> Bool {
+
+    private func textWillBeTruncated(_ text: NSAttributedString) -> Bool {
         let lines = text.lines(for: frame.size.width)
         return collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count
     }
-    
-    // MARK: Touch Handling
-    
-    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        setLinkHighlighted(touches, event: event, highlighted: true)
-    }
-    
-    open override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        setLinkHighlighted(touches, event: event, highlighted: false)
-    }
-    
-    open override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
-        
-        if !collapsed {
-            guard let range = self.expandedLinkTextRange else {
-                return
-            }
-            
-            if shouldCollapse && ExpandableLabel.isTouchInLabelRange(touch: touch, label: self, inRange: range) {
-                delegate?.willCollapseLabel(self)
-                collapsed = true
-                delegate?.didCollapseLabel(self)
-                linkHighlighted = isHighlighted
-                setNeedsDisplay()
-            }
-        } else {
-            if shouldExpand && setLinkHighlighted(touches, event: event, highlighted: false) {
-                delegate?.willExpandLabel(self)
-                collapsed = false
-                delegate?.didExpandLabel(self)
-            }
-        }
-    }
-    
-    @objc static public func isTouchInLabelRange(
-        touch: UITouch,
-        label: UILabel,
-        inRange targetRange: NSRange) -> Bool {
-        
-        guard let attributedText = label.attributedText else {
-            return false
-        }
-        
-        let layoutManager = NSLayoutManager()
-        let textContainer = NSTextContainer(size: CGSize.zero)
-        let textStorage = NSTextStorage(attributedString: attributedText)
-        
-        layoutManager.addTextContainer(textContainer)
-        textStorage.addLayoutManager(layoutManager)
-        
-        textContainer.lineFragmentPadding = 0.0
-        textContainer.lineBreakMode = label.lineBreakMode
-        textContainer.heightTracksTextView = true
-        textContainer.maximumNumberOfLines = label.numberOfLines
-        let labelSize = label.bounds.size
-        textContainer.size = labelSize
-        let textBoundingBox = layoutManager.usedRect(for: textContainer)
-        let locationOfTouchInLabel = touch.location(in: label)
-        
-        if !textBoundingBox.contains(locationOfTouchInLabel) {
-            return false
-        }
-        
-        let locationOfTouchInTextContainer = CGPoint(
-            x:locationOfTouchInLabel.x,
-            y:locationOfTouchInLabel.y);
-        let indexOfCharacter = layoutManager.characterIndex(
-            for: locationOfTouchInTextContainer,
-            in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
-        
-        let characterBoundingRect = layoutManager.boundingRect(forGlyphRange: NSMakeRange(indexOfCharacter, 1), in: textContainer)
-        if !characterBoundingRect.contains(locationOfTouchInTextContainer) {
-            return false
-        }
-        
-        return NSLocationInRange(Int(indexOfCharacter), targetRange)
-    }
-    
-    open override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        setLinkHighlighted(touches, event: event, highlighted: false)
-    }
-    
-    open func setLessLinkWith(lessLink: String, attributes: [NSAttributedString.Key: AnyObject], position: NSTextAlignment?) {
-        var alignedattributes = attributes
-        if let pos = position {
-            expandedLinkPosition = pos
-            let titleParagraphStyle = NSMutableParagraphStyle()
-            titleParagraphStyle.alignment = pos
-            alignedattributes[.paragraphStyle] = titleParagraphStyle
-            
-        }
-        expandedAttributedLink = NSMutableAttributedString(string: lessLink,
-                                                           attributes: alignedattributes)
-    }
-    
-    fileprivate func textClicked(touches: Set<UITouch>?, event: UIEvent?) -> Bool {
+
+    private func textClicked(touches: Set<UITouch>?, event: UIEvent?) -> Bool {
         let touch = event?.allTouches?.first
         let location = touch?.location(in: self)
         let textRect = self.attributedText?.boundingRect(for: self.frame.width)
@@ -419,17 +367,17 @@ import UIKit
         }
         return false
     }
-    
-    @discardableResult fileprivate func setLinkHighlighted(_ touches: Set<UITouch>?, event: UIEvent?, highlighted: Bool) -> Bool {
+
+    @discardableResult private func setLinkHighlighted(_ touches: Set<UITouch>?, event: UIEvent?, highlighted: Bool) -> Bool {
         guard let touch = touches?.first else {
             return false
         }
-        
+
         guard let range = self.collapsedLinkTextRange else {
             return false
         }
-        
-        if collapsed && ExpandableLabel.isTouchInLabelRange(touch: touch, label: self, inRange: range) {
+
+        if collapsed && check(touch: touch, inRange: range) {
             linkHighlighted = highlighted
             setNeedsDisplay()
             return true
@@ -446,18 +394,22 @@ private extension NSAttributedString {
         let font = self.attribute(.font, at: 0, effectiveRange: nil) as? UIFont
         return font != nil
     }
-    
+
     func copyWithParagraphAttribute(_ font: UIFont) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.0;
+        paragraphStyle.lineHeightMultiple = 1.05
         paragraphStyle.alignment = .left
-        paragraphStyle.minimumLineHeight = font.lineHeight;
-        paragraphStyle.maximumLineHeight = font.lineHeight;
+        paragraphStyle.lineSpacing = 0.0
+        paragraphStyle.minimumLineHeight = font.lineHeight
+        paragraphStyle.maximumLineHeight = font.lineHeight
+
         let copy = NSMutableAttributedString(attributedString: self)
-        copy.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: copy.length))
+        let range = NSRange(location: 0, length: copy.length)
+        copy.addAttribute(.paragraphStyle, value: paragraphStyle, range: range)
+        copy.addAttribute(.baselineOffset, value: font.pointSize * 0.08, range: range)
         return copy
     }
-    
+
     func copyWithAddedFontAttribute(_ font: UIFont) -> NSAttributedString {
         if !hasFontAttribute() {
             let copy = NSMutableAttributedString(attributedString: self)
@@ -466,7 +418,7 @@ private extension NSAttributedString {
         }
         return self.copy() as! NSAttributedString
     }
-    
+
     func copyWithHighlightedColor() -> NSAttributedString {
         let alphaComponent = CGFloat(0.5)
         let baseColor: UIColor = (self.attribute(.foregroundColor, at: 0, effectiveRange: nil) as? UIColor)?.withAlphaComponent(alphaComponent) ??
@@ -477,25 +429,25 @@ private extension NSAttributedString {
         highlightedCopy.addAttribute(.foregroundColor, value: baseColor, range: range)
         return highlightedCopy
     }
-    
+
     func lines(for width: CGFloat) -> [CTLine] {
         let path = UIBezierPath(rect: CGRect(x: 0, y: 0, width: width, height: .greatestFiniteMagnitude))
         let frameSetterRef: CTFramesetter = CTFramesetterCreateWithAttributedString(self as CFAttributedString)
         let frameRef: CTFrame = CTFramesetterCreateFrame(frameSetterRef, CFRange(location: 0, length: 0), path.cgPath, nil)
-        
+
         let linesNS: NSArray  = CTFrameGetLines(frameRef)
         let linesAO: [AnyObject] = linesNS as [AnyObject]
         let lines: [CTLine] = linesAO as! [CTLine]
-        
+
         return lines
     }
-    
+
     func text(for lineRef: CTLine) -> NSAttributedString {
         let lineRangeRef: CFRange = CTLineGetStringRange(lineRef)
         let range: NSRange = NSRange(location: lineRangeRef.location, length: lineRangeRef.length)
         return self.attributedSubstring(from: range)
     }
-    
+
     func boundingRect(for width: CGFloat) -> CGRect {
         return self.boundingRect(with: CGSize(width: width, height: .greatestFiniteMagnitude),
                                  options: .usesLineFragmentOrigin, context: nil)
@@ -509,3 +461,93 @@ extension String {
         return count
     }
 }
+
+extension UILabel {
+    open func check(touch: UITouch, inRange targetRange: NSRange) -> Bool {
+        let touchPoint = touch.location(in: self)
+        let index = characterIndex(at: touchPoint)
+        return NSLocationInRange(index, targetRange)
+    }
+
+    private func characterIndex(at touchPoint: CGPoint) -> Int {
+        guard let attributedString = attributedText else { return NSNotFound }
+        if !bounds.contains(touchPoint) {
+            return NSNotFound
+        }
+
+        let textRect = self.textRect(forBounds: bounds, limitedToNumberOfLines: numberOfLines)
+        if !textRect.contains(touchPoint) {
+            return NSNotFound
+        }
+
+        var point = touchPoint
+        // Offset tap coordinates by textRect origin to make them relative to the origin of frame
+        point = CGPoint(x: point.x - textRect.origin.x, y: point.y - textRect.origin.y)
+        // Convert tap coordinates (start at top left) to CT coordinates (start at bottom left)
+        point = CGPoint(x: point.x, y: textRect.size.height - point.y)
+
+        let framesetter = CTFramesetterCreateWithAttributedString(attributedString)
+        let suggestedSize = CTFramesetterSuggestFrameSizeWithConstraints(framesetter, CFRangeMake(0, attributedString.length), nil, CGSize(width: textRect.width, height: CGFloat.greatestFiniteMagnitude), nil)
+
+        let path = CGMutablePath()
+        path.addRect(CGRect(x: 0, y: 0, width: suggestedSize.width, height: CGFloat(ceilf(Float(suggestedSize.height)))))
+
+        let frame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, attributedString.length), path, nil)
+        let lines = CTFrameGetLines(frame)
+        let linesCount = numberOfLines > 0 ? min(numberOfLines, CFArrayGetCount(lines)) : CFArrayGetCount(lines)
+        if linesCount == 0 {
+            return NSNotFound
+        }
+
+        var lineOrigins = [CGPoint](repeating: .zero, count: linesCount)
+        CTFrameGetLineOrigins(frame, CFRangeMake(0, linesCount), &lineOrigins)
+
+        for (idx, lineOrigin) in lineOrigins.enumerated() {
+            var lineOrigin = lineOrigin
+            let lineIndex = CFIndex(idx)
+            let line = unsafeBitCast(CFArrayGetValueAtIndex(lines, lineIndex), to: CTLine.self)
+
+            // Get bounding information of line
+            var ascent: CGFloat = 0.0
+            var descent: CGFloat = 0.0
+            var leading: CGFloat = 0.0
+            let width = CGFloat(CTLineGetTypographicBounds(line, &ascent, &descent, &leading))
+            let yMin = CGFloat(floor(lineOrigin.y - descent))
+            let yMax = CGFloat(ceil(lineOrigin.y + ascent))
+
+            // Apply penOffset using flushFactor for horizontal alignment to set lineOrigin since this is the horizontal offset from drawFramesetter
+            let flushFactor = flushFactorForTextAlignment(textAlignment: textAlignment)
+            let penOffset = CGFloat(CTLineGetPenOffsetForFlush(line, flushFactor, Double(textRect.size.width)))
+            lineOrigin.x = penOffset
+
+            // Check if we've already passed the line
+            if point.y > yMax {
+                return NSNotFound
+            }
+            // Check if the point is within this line vertically
+            if point.y >= yMin {
+                // Check if the point is within this line horizontally
+                if point.x >= lineOrigin.x && point.x <= lineOrigin.x + width {
+                    // Convert CT coordinates to line-relative coordinates
+                    let relativePoint = CGPoint(x: point.x - lineOrigin.x, y: point.y - lineOrigin.y)
+                    return Int(CTLineGetStringIndexForPosition(line, relativePoint))
+                }
+            }
+        }
+
+        return NSNotFound
+    }
+
+    private func flushFactorForTextAlignment(textAlignment: NSTextAlignment) -> CGFloat {
+        switch textAlignment {
+        case .center:
+            return 0.5
+        case .right:
+            return 1.0
+        case .left, .natural, .justified:
+            return 0.0
+        }
+    }
+}
+
+
