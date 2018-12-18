@@ -95,7 +95,7 @@ import UIKit
     @objc open var animationView: UIView?
 
     open var textReplacementType: TextReplacementType = .word
-    
+
     private var collapsedText: NSAttributedString?
     private var linkHighlighted: Bool = false
     private let touchSize = CGSize(width: 44, height: 44)
@@ -192,7 +192,7 @@ extension ExpandableLabel {
                 return
             }
 
-            if shouldCollapse && check(touch: touch, inRange: range) {
+            if shouldCollapse && check(touch: touch, isInRange: range) {
                 delegate?.willCollapseLabel(self)
                 collapsed = true
                 delegate?.didCollapseLabel(self)
@@ -377,7 +377,7 @@ extension ExpandableLabel {
             return false
         }
 
-        if collapsed && check(touch: touch, inRange: range) {
+        if collapsed && check(touch: touch, isInRange: range) {
             linkHighlighted = highlighted
             setNeedsDisplay()
             return true
@@ -463,7 +463,7 @@ extension String {
 }
 
 extension UILabel {
-    open func check(touch: UITouch, inRange targetRange: NSRange) -> Bool {
+    open func check(touch: UITouch, isInRange targetRange: NSRange) -> Bool {
         let touchPoint = touch.location(in: self)
         let index = characterIndex(at: touchPoint)
         return NSLocationInRange(index, targetRange)
