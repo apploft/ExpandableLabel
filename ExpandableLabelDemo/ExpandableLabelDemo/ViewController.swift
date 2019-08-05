@@ -33,7 +33,7 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
         
         states = [Bool](repeating: true, count: numberOfCells)
         tableView.estimatedRowHeight = 44
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -142,19 +142,19 @@ class ViewController: UITableViewController, ExpandableLabelDelegate {
 extension String {
     
     func specialPriceAttributedStringWith(_ color: UIColor) -> NSMutableAttributedString {
-        let attributes = [NSAttributedStringKey.strikethroughStyle: NSNumber(value: NSUnderlineStyle.styleSingle.rawValue as Int),
+        let attributes = [NSAttributedString.Key.strikethroughStyle: NSNumber(value: NSUnderlineStyle.single.rawValue as Int),
                           .foregroundColor: color, .font: fontForPrice()]
         return NSMutableAttributedString(attributedString: NSAttributedString(string: self, attributes: attributes))
     }
     
     func priceAttributedStringWith(_ color: UIColor) -> NSAttributedString {
-        let attributes = [NSAttributedStringKey.foregroundColor: color, .font: fontForPrice()]
+        let attributes = [NSAttributedString.Key.foregroundColor: color, .font: fontForPrice()]
         
         return NSAttributedString(string: self, attributes: attributes)
     }
     
     func priceAttributedString(_ color: UIColor) -> NSAttributedString {
-        let attributes = [NSAttributedStringKey.foregroundColor: color]
+        let attributes = [NSAttributedString.Key.foregroundColor: color]
         
         return NSAttributedString(string: self, attributes: attributes)
     }
