@@ -47,13 +47,16 @@ import UIKit
     /// The delegate of ExpandableLabel
     @objc weak open var delegate: ExpandableLabelDelegate?
 
+    /// Animation duration for expanding/collapsing 
+    open var animationDuration: Double = 0.5
+    
     /// Set 'true' if the label should be collapsed or 'false' for expanded.
     @IBInspectable open var collapsed: Bool = true {
         didSet {
             super.attributedText = (collapsed) ? self.collapsedText : self.expandedText
             super.numberOfLines = (collapsed) ? self.collapsedNumberOfLines : 0
             if let animationView = animationView {
-                UIView.animate(withDuration: 0.5) {
+                UIView.animate(withDuration: self.animationDuration) {
                     animationView.layoutIfNeeded()
                 }
             }
