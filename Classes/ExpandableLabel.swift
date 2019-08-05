@@ -45,10 +45,11 @@ import UIKit
     }
 
     /// The delegate of ExpandableLabel
-    
-    open var animationDuration: Double = 0.5
     @objc weak open var delegate: ExpandableLabelDelegate?
 
+    /// Animation duration for expanding/collapsing 
+    open var animationDuration: Double = 0.5
+    
     /// Set 'true' if the label should be collapsed or 'false' for expanded.
     @IBInspectable open var collapsed: Bool = true {
         didSet {
