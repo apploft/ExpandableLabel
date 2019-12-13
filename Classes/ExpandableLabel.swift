@@ -398,7 +398,7 @@ private extension NSAttributedString {
     func copyWithParagraphAttribute(_ font: UIFont) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.05
-        paragraphStyle.alignment = .left
+        paragraphStyle.alignment = .natural
         paragraphStyle.lineSpacing = 0.0
         paragraphStyle.minimumLineHeight = font.lineHeight
         paragraphStyle.maximumLineHeight = font.lineHeight
