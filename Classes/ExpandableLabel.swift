@@ -87,6 +87,8 @@ import UIKit
             self.ellipsis = ellipsis?.copyWithAddedFontAttribute(font)
         }
     }
+    
+    @objc open var alignment: NSTextAlignment = .left
 
     /// Set a view to animate changes of the label collapsed state with. If this value is nil, no animation occurs.
     /// Usually you assign the superview of this label or a UIScrollView in which this label sits.
@@ -141,7 +143,7 @@ import UIKit
     open private(set) var expandedText: NSAttributedString?
     open override var attributedText: NSAttributedString? {
         set(attributedText) {
-            if let attributedText = attributedText?.copyWithAddedFontAttribute(font).copyWithParagraphAttribute(font),
+            if let attributedText = attributedText?.copyWithAddedFontAttribute(font).copyWithParagraphAttribute(font, alignment: alignment),
                 attributedText.length > 0 {
                 self.collapsedText = getCollapsedText(for: attributedText, link: (linkHighlighted) ? collapsedAttributedLink.copyWithHighlightedColor() : self.collapsedAttributedLink)
                 self.expandedText = getExpandedText(for: attributedText, link: (linkHighlighted) ? expandedAttributedLink?.copyWithHighlightedColor() : self.expandedAttributedLink)
@@ -395,10 +397,10 @@ private extension NSAttributedString {
         return font != nil
     }
 
-    func copyWithParagraphAttribute(_ font: UIFont) -> NSAttributedString {
+    func copyWithParagraphAttribute(_ font: UIFont, alignment: NSTextAlignment) -> NSAttributedString {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.05
-        paragraphStyle.alignment = .left
+        paragraphStyle.alignment = alignment
         paragraphStyle.lineSpacing = 0.0
         paragraphStyle.minimumLineHeight = font.lineHeight
         paragraphStyle.maximumLineHeight = font.lineHeight
