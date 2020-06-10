@@ -292,22 +292,18 @@ extension ExpandableLabel {
         let lines = text.lines(for: frame.size.width)
         if collapsedNumberOfLines > 0 && collapsedNumberOfLines < lines.count {
             let lastLineRef = lines[collapsedNumberOfLines-1] as CTLine
-            var lineIndex: LineIndexTuple?
+            let lineIndex: LineIndexTuple
             var modifiedLastLineText: NSAttributedString?
 
             if self.textReplacementType == .word {
                 lineIndex = findLineWithWords(lastLine: lastLineRef, text: text, lines: lines)
-                if let lineIndex = lineIndex {
-                    modifiedLastLineText = textReplaceWordWithLink(lineIndex, text: text, linkName: link)
-                }
+                modifiedLastLineText = textReplaceWordWithLink(lineIndex, text: text, linkName: link)
             } else {
                 lineIndex = (lastLineRef, collapsedNumberOfLines - 1)
-                if let lineIndex = lineIndex {
-                    modifiedLastLineText = textReplaceWithLink(lineIndex, text: text, linkName: link)
-                }
+                modifiedLastLineText = textReplaceWithLink(lineIndex, text: text, linkName: link)
             }
 
-            if let lineIndex = lineIndex, let modifiedLastLineText = modifiedLastLineText {
+            if let modifiedLastLineText = modifiedLastLineText {
                 let collapsedLines = NSMutableAttributedString()
                 for index in 0..<lineIndex.index {
                     collapsedLines.append(text.text(for:lines[index]))
