@@ -14,6 +14,7 @@
 		1B0D8A441F3AAA50004142A4 /* ExpandableLabel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ExpandableLabel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B0D8A501F3AAA6C004142A4 /* ExpandableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableLabel.swift; sourceTree = "<group>"; };
 		1B0D8A511F3AAA6C004142A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F685D23D232A593F0000133D /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -30,6 +31,7 @@
 		1B0D8A3A1F3AAA50004142A4 = {
 			isa = PBXGroup;
 			children = (
+				F685D23D232A593F0000133D /* Package.swift */,
 				1B0D8A4F1F3AAA6C004142A4 /* Classes */,
 				1B0D8A451F3AAA50004142A4 /* Products */,
 			);
