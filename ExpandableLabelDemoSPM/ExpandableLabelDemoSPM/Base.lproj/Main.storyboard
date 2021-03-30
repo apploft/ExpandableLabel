@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="Sgv-1X-8Ia">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Demo-->
+        <scene sceneID="XPS-CU-ONx">
+            <objects>
+                <tableViewController id="WAi-Qd-2Qg" customClass="ViewController" customModule="ExpandableLabelDemoSPM" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="WO2-8j-306">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cell" id="HCr-2t-aim" customClass="ExpandableCell" customModule="ExpandableLabelDemoSPM" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="22" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HCr-2t-aim" id="TdU-MF-KYO">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9dO-02-Lp8" customClass="ExpandableLabel" customModule="ExpandableLabel">
+                                            <rect key="frame" x="8" y="11" width="359" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="9dO-02-Lp8" secondAttribute="bottom" constant="11" id="hKz-wF-KTd"/>
+                                        <constraint firstItem="9dO-02-Lp8" firstAttribute="top" secondItem="TdU-MF-KYO" secondAttribute="top" constant="11" id="pJq-E0-xMQ"/>
+                                        <constraint firstItem="9dO-02-Lp8" firstAttribute="leading" secondItem="TdU-MF-KYO" secondAttribute="leading" constant="8" id="t56-jO-sfj"/>
+                                        <constraint firstAttribute="trailing" secondItem="9dO-02-Lp8" secondAttribute="trailing" constant="8" id="zpH-lA-5tB"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="expandableLabel" destination="9dO-02-Lp8" id="tSo-Ay-dyq"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="WAi-Qd-2Qg" id="u00-32-aSl"/>
+                            <outlet property="delegate" destination="WAi-Qd-2Qg" id="Yax-gI-Jlo"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Demo" id="Ycw-Ar-1OC"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oyE-r0-827" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1329" y="304"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="rka-Ye-KxD">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Sgv-1X-8Ia" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="05P-69-cdP">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="WAi-Qd-2Qg" kind="relationship" relationship="rootViewController" id="5ec-Pa-ndU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4MP-pd-d8b" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="516" y="304"/>
+        </scene>
+    </scenes>
+</document>
