@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 import UIKit
+import ExpandableLabel
 
 class ViewController: UITableViewController, ExpandableLabelDelegate {
 
