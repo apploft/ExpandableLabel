@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BF0468121B44121F009EC2F9 /* ExpandableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0468111B44121F009EC2F9 /* ExpandableLabel.swift */; };
 		BF38D1C81B42EE3E000091FD /* ExpandableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */; };
 		BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF43429F1B416FDD002FDE1F /* AppDelegate.swift */; };
 		BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4342A11B416FDD002FDE1F /* ViewController.swift */; };
@@ -17,7 +16,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BF0468111B44121F009EC2F9 /* ExpandableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableLabel.swift; sourceTree = "<group>"; };
 		BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpandableCell.swift; sourceTree = "<group>"; };
 		BF43429A1B416FDD002FDE1F /* ExpandableLabelDemoSPM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExpandableLabelDemoSPM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF43429E1B416FDD002FDE1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -39,15 +37,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BF0468101B44121F009EC2F9 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				BF0468111B44121F009EC2F9 /* ExpandableLabel.swift */,
-			);
-			name = Classes;
-			path = ../../Classes;
-			sourceTree = "<group>";
-		};
 		BF4342911B416FDD002FDE1F = {
 			isa = PBXGroup;
 			children = (
@@ -67,7 +56,6 @@
 		BF43429C1B416FDD002FDE1F /* ExpandableLabelDemoSPM */ = {
 			isa = PBXGroup;
 			children = (
-				BF0468101B44121F009EC2F9 /* Classes */,
 				BF43429F1B416FDD002FDE1F /* AppDelegate.swift */,
 				BF4342A11B416FDD002FDE1F /* ViewController.swift */,
 				BF38D1C71B42EE3E000091FD /* ExpandableCell.swift */,
@@ -161,7 +149,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF0468121B44121F009EC2F9 /* ExpandableLabel.swift in Sources */,
 				BF4342A21B416FDD002FDE1F /* ViewController.swift in Sources */,
 				BF4342A01B416FDD002FDE1F /* AppDelegate.swift in Sources */,
 				BF38D1C81B42EE3E000091FD /* ExpandableCell.swift in Sources */,
